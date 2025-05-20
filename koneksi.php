@@ -2,7 +2,7 @@
 $host = 'localhost';  // Hostname dari server database
 $user = 'root';       // Username untuk akses database
 $pass = '';           // Password untuk akses database (sesuaikan)
-$dbname = 'mover';  // Nama database
+$dbname = 'kost';  // Nama database
 
 // Membuat koneksi ke database
 $conn = mysqli_connect($host, $user, $pass, $dbname);
