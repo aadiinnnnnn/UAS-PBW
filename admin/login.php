@@ -1,5 +1,4 @@
 <?php 
-    session_start();
     require "../koneksi.php"; 
 ?>
 
@@ -35,7 +34,8 @@
             <form action="" method="post">
                 <div>
                     <label for="username">Username</label>
-                    <input type="username" class="form-control" name="username" id="username">
+                    <input type="text" class="form-control" name="username" id="username">
+
                 </div>
                 <div>
                     <label for="password">Password</label>
