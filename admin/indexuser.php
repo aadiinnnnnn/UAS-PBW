@@ -1,5 +1,5 @@
 <?php 
-session_start();
+require 'session.php'; 
 ?>
 
 <!DOCTYPE html>
@@ -8,8 +8,8 @@ session_start();
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MOVER</title>
-    <link rel="stylesheet" href="../css/index.css">
+    <title>MOVER - Pengguna</title>
+    <link rel="stylesheet" href="../css/indexuser.css" />
 
 </head>
 
@@ -17,13 +17,19 @@ session_start();
     <header class="navbar">
         <div class="logo">LOGO</div>
         <nav class="nav-menu">
-            <a href="login.php">
-                <button class="login-btn">Login</button>
-            </a>
+            <div class="profile-icon">
+                <img src="/assets/img/red-truck.png" alt="User Profile" />
+            </div>
             <a href="#">About</a>
             <a href="#">Contact</a>
-            <button class="order-btn">Order <span class="arrow">▶</span></button>
+            <a href="order.php">
+                <button class="order-btn">Order <span class="arrow">▶</span></button>
+            </a>
+            <a href="logout.php">
+                <button class="logout-btn">Logout</button>
+            </a>
         </nav>
+
     </header>
 
     <main class="hero">
