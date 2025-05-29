@@ -1,0 +1,230 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* Menggunakan Poppins sebagai fallback jika Helvetica Neue tidak tersedia, atau pilih salah satu */
+  font-family: "Helvetica Neue", "Poppins", sans-serif;
+}
+
+body {
+  background-color: #418d99; /* Warna biru toska sesuai Figma */
+  color: white;
+  overflow-x: hidden;
+}
+
+/* ==== Navbar ==== */
+/* Kelas .navbar ini akan digunakan baik di landing page maupun register page */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 50px; /* Padding standar untuk navbar */
+  background-color: transparent; /* Atau #418d99 jika ingin menyatu dengan body */
+  position: fixed; /* Membuat navbar tetap di atas */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1030; /* Pastikan di atas konten lain */
+  /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: jika ingin ada shadow */
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: white; /* Sesuaikan jika logo MOVER Anda memiliki warna spesifik */
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.nav-menu a {
+  text-decoration: none;
+  color: white;
+  font-size: 1rem;
+}
+
+.login-btn {
+  /* Tombol login di navbar */
+  background-color: white;
+  color: #418d99; /* Warna teks tombol login */
+  padding: 8px 20px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.order-btn {
+  /* Tombol order di navbar */
+  background-color: white;
+  color: #418d99; /* Warna teks tombol order */
+  padding: 8px 20px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.arrow {
+  margin-left: 6px;
+}
+
+/* ==== Gaya Spesifik untuk Halaman Registrasi ==== */
+/* Kita akan tetap mempertahankan beberapa gaya spesifik untuk kartu registrasi */
+body.register-page-body {
+  /* background-color: #418d99; /* Sudah diatur di body global */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+  /* color: #333; /* color: white; sudah diatur di body global */
+  padding-top: 120px; /* Jarak lebih besar untuk navbar fixed + sedikit space */
+  padding-bottom: 40px;
+}
+
+.register-card {
+  background-color: #ffffff; /* Kartu tetap putih */
+  color: #333; /* Teks di dalam kartu menjadi gelap agar kontras dengan background putih */
+  border-radius: 15px;
+  padding: 30px 40px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Shadow lebih jelas */
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+}
+
+.register-title {
+  color: #2f4f4f; /* Warna judul di dalam kartu */
+  font-weight: 700;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+}
+
+.register-form .form-label {
+  text-align: left;
+  display: block;
+  margin-bottom: 8px;
+  color: #495057; /* Warna label form */
+  font-weight: 600;
+}
+
+.register-form .form-control {
+  border-radius: 8px;
+  padding: 10px 15px;
+  border: 1px solid #ced4da; /* Border standar bootstrap agar terlihat */
+  color: #495057; /* Warna teks input */
+}
+
+.register-form .form-control::placeholder {
+  color: #6c757d; /* Warna placeholder */
+}
+
+.btn-register-custom {
+  /* Tombol daftar di dalam kartu */
+  background-color: #ffd700; /* Warna tombol utama registrasi */
+  border-color: #ffd700;
+  color: #2f4f4f; /* Teks tombol registrasi */
+  font-weight: 600;
+  padding: 10px 25px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  margin-top: 15px;
+  width: 100%; /* Tombol daftar full width */
+}
+
+.btn-register-custom:hover {
+  background-color: #e0c200; /* Warna hover tombol registrasi */
+  border-color: #e0c200;
+}
+
+.login-link-register {
+  /* Class baru untuk link login di bawah form registrasi */
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #6c757d; /* Warna teks link login */
+}
+
+.login-link-register a {
+  color: #418d99; /* Warna link login agar sesuai tema */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-link-register a:hover {
+  text-decoration: underline;
+}
+
+/* Hero Section (dari CSS global, tidak relevan langsung untuk register tapi ada di file) */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 80px 60px; /* Ini mungkin perlu disesuaikan jika navbar fixed */
+  margin-top: 80px; /* Beri margin atas agar tidak tertutup navbar fixed */
+}
+
+.hero-text {
+  max-width: 45%;
+}
+
+.hero-text h1 {
+  font-size: 3.2rem;
+  font-weight: bold;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+}
+
+.cta-btn {
+  background-color: white;
+  color: #418d99;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.25);
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+  transition: 0.2s;
+}
+
+.hero-image {
+  position: relative;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.circle-bg {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background-color: #d9d9d9;
+  border-radius: 50%;
+  right: -100px;
+  top: 20px;
+  z-index: 0;
+}
+
+.hero-image img {
+  width: 420px;
+  max-width: 100%;
+  height: auto;
+  z-index: 1;
+  position: relative;
+}
