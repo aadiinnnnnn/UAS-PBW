@@ -22,7 +22,6 @@ session_start();
             </a>
             <a href="#">About</a>
             <a href="#">Contact</a>
-            <button class="order-btn">Order <span class="arrow">▶</span></button>
         </nav>
     </header>
 
@@ -34,7 +33,7 @@ session_start();
         </div>
         <div class="hero-image">
             <div class="circle-bg"></div>
-            <img src="/—Pngtree—realistic 3d model of a_20092787.png" alt="Truk Mover" />
+            <img src="../image/—Pngtree—realistic 3d model of a_20092787.png" alt="Truk Mover" />
         </div>
     </main>
 </body>

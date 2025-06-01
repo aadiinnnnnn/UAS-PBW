@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Verifikasi password
             // Jika password di database di-hash menggunakan password_hash()
-            if (password_verify($password_hash, $row['password'])) {
+            if (password_verify($password, $row['password'])) {
                 // Password benar, buat session
                 $_SESSION['loggedin'] = true;
                 $_SESSION['user_id'] = $row['id']; // Simpan ID pengguna jika perlu
@@ -114,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 Belum punya akun? <a href="registrasi.php">Daftar di sini</a>
             </p>
             <p class="mt-2 text-center">
-                <a href="index.php">Kembali ke Halaman Utama</a>
+                <a href="../admin/index.php">Kembali ke Halaman Utama</a>
             </p>
         </form>
     </div>
