@@ -161,11 +161,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="logo">MOVER</div>
         <nav class="nav-menu">
             <div class="profile-icon">
-                <img src="../assets/img/red-truck.png" alt="Mover Icon" />
+                <img src="" alt="Mover Icon" />
             </div>
             <a href="#">About</a>
             <a href="#">Contact</a>
-            <a href="indexuser.php"> <button class="order-btn">HOME <span class="arrow"></span></button>
+            <a href="../admin/index.php"> <button class="order-btn">HOME <span class="arrow"></span></button>
             </a>
         </nav>
     </header>
