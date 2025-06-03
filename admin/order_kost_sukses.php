@@ -21,8 +21,8 @@ if (isset($_SESSION['latestKostOrderDetails'])) { //
     <title>MOVER - Pesanan Kost Berhasil</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="../css/common.css"> {/* Pastikan path common.css benar */}
-    <link rel="stylesheet" href="../css/style.css"> {/* Jika ada style umum lainnya */}
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/style.css">
     <style>
     body.order-success-page {
         background-color: #f0f2f5;
@@ -71,9 +71,8 @@ if (isset($_SESSION['latestKostOrderDetails'])) { //
         border-radius: 50%;
         /* */
         overflow: hidden;
-        /* */
+
         border: 2px solid white;
-        /* */
     }
 
     .header-custom .profile-icon-link .profile-icon-sm img {
@@ -255,10 +254,9 @@ if (isset($_SESSION['latestKostOrderDetails'])) { //
                     </li>
                     <li class="nav-item"><a class="nav-link" href="indexuser.php">Beranda</a></li>
                     <li class="nav-item"><a class="nav-link" href="pilihan_order.php">Order Lagi</a></li>
-                    {/* Tombol Logout di bawah ini mungkin duplikat dengan yang di dropdown, bisa dipilih salah satu */}
-                    {/* <li class="nav-item">
+                    <li class="nav-item">
                         <a href="logout.php" class="nav-link btn btn-logout-custom">Logout</a>
-                    </li> */}
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -288,8 +286,10 @@ if (isset($_SESSION['latestKostOrderDetails'])) { //
                 {/* */}
                 kami. {/* */}
             </p>
-            <a href="carikost.php" class="btn btn-back-home-standalone">Cari Kost Lain</a> {/* */}
-            <a href="indexuser.php" class="btn btn-secondary mt-3 ml-2">Kembali ke Dashboard</a> {/* */}
+            <a href="bersih.php" class="btn btn-back-home-standalone">Cari Kost Lain</a>
+            <a href="indexuser.php" class="btn btn-secondary mt-3 ml-2">Kembali ke Dashboard</a>
+            <a href="review_form.php?order_id=<?php echo htmlspecialchars($orderDetailsFromSession['orderId']); ?>&order_type=kost"
+                class="btn btn-info mt-3 ml-2">Berikan Ulasan</a>
         </div>
     </main>
 
