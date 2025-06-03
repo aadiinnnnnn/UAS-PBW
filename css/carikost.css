@@ -1,0 +1,191 @@
+/* style.css (Untuk Halaman Cari Kost - Telah Disesuaikan) */
+
+/* === Global & Body === */
+body {
+  background-color: #f8f9fa; /* Latar belakang netral agar konten utama menonjol */
+}
+
+/* === Penyesuaian Header/Navbar agar konsisten dengan dasbor pengguna === */
+/* Gaya ini diasumsikan sebagian besar sudah ada di common.css, 
+   namun ditambahkan di sini untuk kelengkapan dan penyesuaian. */
+.header-custom .profile-icon-sm {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 8px;
+  border: 1px solid white;
+}
+.header-custom .order-btn-nav {
+  background-color: #ffd700; /* Warna aksen kuning dari halaman order */
+  color: #2f4f4f !important;
+  padding: 8px 15px !important;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+.header-custom .order-btn-nav:hover {
+  background-color: #e0c200;
+}
+.navbar-nav .dropdown-toggle::after {
+  margin-left: 0.5em;
+}
+
+/* === HERO SECTION & SEARCH BAR (Cari Kost) === */
+.hero-section-search {
+  background: linear-gradient(to right, #367a83, #418d99); /* Menggunakan warna utama aplikasi */
+  padding: 60px 20px;
+  color: white;
+  text-align: center;
+}
+.hero-section-search h1 {
+  font-size: 2.5em;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+.hero-section-search p {
+  font-size: 1.2em;
+  margin-bottom: 25px;
+  opacity: 0.9;
+}
+
+.search-filter-container {
+  position: relative;
+  z-index: 10;
+  margin-top: -40px; /* Membuat search bar sedikit menjorok ke hero section */
+  margin-bottom: 30px;
+}
+.search-bar-wrapper {
+  background-color: white;
+  padding: 20px 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+.search-bar-wrapper label {
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+}
+.search-bar-wrapper .form-control,
+.search-bar-wrapper .custom-select {
+  border-radius: 8px !important;
+}
+.btn-search-kost {
+  background-color: #f5a623; /* Warna aksen oranye yang konsisten */
+  color: white;
+  font-weight: bold;
+  border: none;
+  height: 48px;
+  transition: background-color 0.2s ease;
+}
+.btn-search-kost:hover {
+  background-color: #db8e1e;
+  color: white;
+}
+
+.advanced-filters .btn-link {
+  color: #367a83;
+  font-weight: bold;
+}
+
+/* === KOST CARD STYLING (HASIL PENCARIAN) === */
+.kost-card {
+  background-color: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Membuat semua card dalam satu baris sama tinggi */
+}
+.kost-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+.img-container {
+  position: relative;
+  width: 100%;
+  padding-top: 65%; /* Aspect ratio untuk gambar */
+  overflow: hidden;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+.img-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.kost-card .card-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Memastikan card-body mengisi sisa ruang */
+}
+.kost-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.15rem;
+  margin-bottom: 0.25rem;
+}
+.kost-location {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+.kost-location i {
+  margin-right: 5px;
+}
+.kost-facilities {
+  margin-bottom: 1rem;
+}
+.kost-facilities .badge-facility {
+  background-color: #e9ecef;
+  color: #495057;
+  font-weight: 500;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  padding: 0.3em 0.6em;
+}
+.kost-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #f5a623; /* Warna aksen oranye */
+  margin-top: auto; /* Mendorong harga dan tombol ke bawah */
+}
+.price-period {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-weight: normal;
+}
+.btn-detail {
+  background-color: #367a83; /* Warna utama */
+  border-color: #367a83;
+  color: white;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+.btn-detail:hover {
+  background-color: #2a5f68; /* Warna utama lebih gelap saat hover */
+  border-color: #2a5f68;
+  color: white;
+}
+
+/* === RESPONSIVE ADJUSTMENTS === */
+@media (max-width: 991px) {
+  .search-bar-wrapper .form-group {
+    margin-bottom: 1rem; /* Memberi jarak antar input di layar medium */
+  }
+}
+@media (max-width: 767px) {
+  .hero-section-search h1 {
+    font-size: 2em;
+  }
+  .hero-section-search p {
+    font-size: 1.1em;
+  }
+}
