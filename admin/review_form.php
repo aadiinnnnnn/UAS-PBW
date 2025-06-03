@@ -1,6 +1,6 @@
 <?php
 include 'session.php'; // Memastikan pengguna sudah login
-include '..\koneksi.php'; // Koneksi ke database
+include '../koneksi.php'; // Koneksi ke database
 
 $user_id = $_SESSION['user_id'] ?? null;
 $username = $_SESSION['username'] ?? 'User';
@@ -18,7 +18,7 @@ if (empty($order_id_ref) || empty($order_type)) {
 } else {
     // Ambil informasi order untuk ditampilkan kepada user
     $table = '';
-    $id_col = '';
+    $id_col = ''; // Nama kolom ID primer di tabel order
     $order_date_col = '';
     $total_price_col = '';
     $item_desc_col = ''; // Kolom untuk deskripsi item/layanan
@@ -26,10 +26,10 @@ if (empty($order_id_ref) || empty($order_type)) {
     switch ($order_type) {
         case 'kost':
             $table = 'order_sewa_kost';
-            $id_col = 'id_order_kost'; // Asumsi nama kolom ID di tabel order_sewa_kost
+            $id_col = 'id_order_sewa'; // <<--- PERBAIKAN: Berdasarkan mover (4).sql
             $order_date_col = 'tanggal_check_in';
             $total_price_col = 'total_harga';
-            $item_desc_col = 'jenis_paket_bk'; // atau 'nama_kost'
+            $item_desc_col = 'durasi_sewa_pilihan'; // atau 'nama_kost'
             break;
         case 'pindahan':
             $table = 'order_layanan_pindahan_barang_kos';
@@ -50,7 +50,7 @@ if (empty($order_id_ref) || empty($order_type)) {
     }
 
     if (empty($error) && !empty($table)) {
-        // Pastikan order ini milik user yang sedang login
+        // Ambil detail order
         $stmt_order_check = $conn->prepare("SELECT * FROM {$table} WHERE {$id_col} = ? AND id_user = ?");
         if ($stmt_order_check) {
             $stmt_order_check->bind_param("ss", $order_id_ref, $user_id);
@@ -58,21 +58,28 @@ if (empty($order_id_ref) || empty($order_type)) {
             $result_order_check = $stmt_order_check->get_result();
             if ($result_order_check->num_rows > 0) {
                 $order_data = $result_order_check->fetch_assoc();
-                $order_info_display = "Order ID: <span class='order-id-display'>" . htmlspecialchars($order_data[$id_col]) . "</span> | Tipe: " . htmlspecialchars($order_type) . " | Tanggal: " . htmlspecialchars($order_data[$order_date_col]) . " | Total: Rp " . number_format($order_data[$total_price_col], 0, ',', '.');
-                // Anda bisa menambahkan detail lain seperti nama kost/layanan di sini
+                
+                $tanggal_order_format = '';
+                try {
+                    $date_obj = new DateTime($order_data[$order_date_col]);
+                    $tanggal_order_format = $date_obj->format('d M Y');
+                } catch (Exception $e) {
+                    $tanggal_order_format = htmlspecialchars($order_data[$order_date_col]);
+                }
+
+                $order_info_display = "Order ID: <span class='order-id-display'>" . htmlspecialchars($order_data[$id_col]) . "</span> | Tipe: " . htmlspecialchars($order_type) . " | Tanggal: " . $tanggal_order_format . " | Total: Rp " . number_format($order_data[$total_price_col], 0, ',', '.');
                 if (isset($order_data[$item_desc_col])) {
                     $order_info_display .= " | Layanan: " . htmlspecialchars($order_data[$item_desc_col]);
                 }
 
                 // Cek apakah user sudah memberikan ulasan untuk order ini
-                $stmt_check_ulasan = $conn->prepare("SELECT id_ulasan FROM ulasan_layanan WHERE id_user = ? AND order_id_ref = ? AND order_type = ?");
+                // Baris 77: PERBAIKAN KOLOM 'order_id_ref' -> 'id_order' dan 'order_type' -> 'jenis_layanan'
+                $stmt_check_ulasan = $conn->prepare("SELECT id_ulasan FROM ulasan_layanan WHERE id_user = ? AND id_order = ? AND jenis_layanan = ?");
                 if ($stmt_check_ulasan) {
                     $stmt_check_ulasan->bind_param("sss", $user_id, $order_id_ref, $order_type);
                     $stmt_check_ulasan->execute();
                     if ($stmt_check_ulasan->get_result()->num_rows > 0) {
-                        $error = "Anda sudah memberikan ulasan untuk order ini.";
-                        // Redirect ke halaman sukses langsung jika sudah ulas
-                        header("Location: submit_review.php?status=duplicate&order_id=" . urlencode($order_id_ref));
+                        header("Location: submit_review.php?status=duplicate&order_id=" . urlencode($order_id_ref) . "&order_type=" . urlencode($order_type));
                         exit();
                     }
                     $stmt_check_ulasan->close();
@@ -95,24 +102,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_review'])) {
     $rating = $_POST['rating'] ?? 0;
     $comment = $_POST['comment'] ?? '';
 
-    // Validasi input ulasan
+    $order_id_ref_post = $_POST['order_id_ref'] ?? null;
+    $order_type_post = $_POST['order_type'] ?? null;
+
+    $final_order_id = $order_id_ref_post ?: $order_id_ref;
+    $final_order_type = $order_type_post ?: $order_type;
+
     if ($rating < 1 || $rating > 5) {
         $error = "Rating tidak valid.";
+    } elseif (empty($final_order_id) || empty($final_order_type)) {
+        $error = "Informasi order tidak lengkap untuk menyimpan ulasan.";
     } else {
-        // Masukkan ulasan ke database
-        $stmt_insert_ulasan = $conn->prepare("INSERT INTO ulasan_layanan (id_user, order_id_ref, order_type, rating, komentar) VALUES (?, ?, ?, ?, ?)");
-        if ($stmt_insert_ulasan) {
-            $stmt_insert_ulasan->bind_param("sssis", $user_id, $order_id_ref, $order_type, $rating, $comment);
-            if ($stmt_insert_ulasan->execute()) {
-                // Redirect ke halaman sukses setelah berhasil
-                header("Location: submit_review.php?status=success&order_id=" . urlencode($order_id_ref) . "&order_type=" . urlencode($order_type));
+        // Cek kembali duplikasi sebelum insert untuk mencegah submit ganda yang sangat cepat
+        // PERBAIKAN KOLOM 'order_id_ref' -> 'id_order' dan 'order_type' -> 'jenis_layanan'
+        $stmt_check_ulasan_pre_insert = $conn->prepare("SELECT id_ulasan FROM ulasan_layanan WHERE id_user = ? AND id_order = ? AND jenis_layanan = ?");
+        if ($stmt_check_ulasan_pre_insert) {
+            $stmt_check_ulasan_pre_insert->bind_param("sss", $user_id, $final_order_id, $final_order_type);
+            $stmt_check_ulasan_pre_insert->execute();
+            if ($stmt_check_ulasan_pre_insert->get_result()->num_rows > 0) {
+                header("Location: submit_review.php?status=duplicate&order_id=" . urlencode($final_order_id) . "&order_type=" . urlencode($final_order_type));
                 exit();
-            } else {
-                $error = "Gagal menyimpan ulasan: " . $stmt_insert_ulasan->error;
             }
-            $stmt_insert_ulasan->close();
+            $stmt_check_ulasan_pre_insert->close();
         } else {
-            $error = "Gagal menyiapkan statement ulasan: " . $conn->error;
+            $error = "Gagal menyiapkan pre-cek ulasan: " . $conn->error;
+        }
+
+        if (empty($error)) {
+            // Masukkan ulasan ke database
+            // PERBAIKAN KOLOM 'order_id_ref' -> 'id_order' dan 'order_type' -> 'jenis_layanan'
+            $stmt_insert_ulasan = $conn->prepare("INSERT INTO ulasan_layanan (id_user, id_order, jenis_layanan, rating, komentar) VALUES (?, ?, ?, ?, ?)");
+            if ($stmt_insert_ulasan) {
+                $stmt_insert_ulasan->bind_param("sssis", $user_id, $final_order_id, $final_order_type, $rating, $comment);
+                if ($stmt_insert_ulasan->execute()) {
+                    header("Location: submit_review.php?status=success&order_id=" . urlencode($final_order_id) . "&order_type=" . urlencode($final_order_type));
+                    exit();
+                } else {
+                    $error = "Gagal menyimpan ulasan: " . $stmt_insert_ulasan->error;
+                }
+                $stmt_insert_ulasan->close();
+            } else {
+                $error = "Gagal menyiapkan statement ulasan: " . $conn->error;
+            }
         }
     }
 }
@@ -129,6 +160,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_review'])) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../css/rating.css" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 
 <body>
@@ -161,7 +193,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_review'])) {
             <p class="mt-3"><a href="indexuser.php" class="btn btn-secondary">Kembali ke Beranda</a></p>
             <?php elseif (empty($order_id_ref) || empty($order_type) || empty($order_data)): ?>
             <div class="message-box error-message">
-                Order tidak ditemukan atau tidak valid untuk diulas.
+                Order tidak ditemukan atau tidak valid untuk diulas. Pastikan Anda mengakses halaman ini dari link
+                ulasan di riwayat pesanan.
             </div>
             <p class="mt-3"><a href="indexuser.php" class="btn btn-secondary">Kembali ke Beranda</a></p>
             <?php else: ?>

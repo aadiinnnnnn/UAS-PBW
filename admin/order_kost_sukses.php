@@ -264,31 +264,30 @@ if (isset($_SESSION['latestKostOrderDetails'])) { //
 
     <main class="success-card-container">
         <div class="success-card-standalone">
-            <div class="success-icon-standalone"><i class="fas fa-check-circle"></i></div> {/* */}
-            <h2 class="success-title-standalone">Pesanan Kost Anda Telah Diterima!</h2> {/* */}
+            <div class="success-icon-standalone"><i class="fas fa-check-circle"></i></div>
+            <h2 class="success-title-standalone">Pesanan Kost Anda Telah Diterima!</h2>
             <p class="success-message-standalone">
-                Terima kasih telah memilih MOVER. Pesanan Anda sedang kami proses. {/* */}
-                Tim kami akan segera menghubungi Anda untuk konfirmasi lebih lanjut. {/* */}
+                Terima kasih telah memilih MOVER. Pesanan Anda sedang kami proses
+                Tim kami akan segera menghubungi Anda untuk konfirmasi lebih lanjut.
             </p>
             <div class="order-details-summary-standalone">
-                <h6>Detail Pesanan Anda:</h6> {/* */}
-                <p><strong>Nomor Pesanan:</strong> <span id="orderId">Memuat...</span></p> {/* */}
-                <p><strong>Nama Kost:</strong> <span id="summaryKostName">Memuat...</span></p> {/* */}
-                <p><strong>Alamat Kost:</strong> <span id="summaryKostAddress">Memuat...</span></p> {/* */}
-                <p><strong>Tanggal Check-in:</strong> <span id="tanggalSewa">Memuat...</span></p> {/* */}
-                <p><strong>Durasi Sewa:</strong> <span id="durasiSewaDisplay">Memuat...</span></p> {/* */}
-                <p><strong>Total Pembayaran:</strong> Rp <span id="totalBiaya">Memuat...</span></p> {/* */}
-                <p><strong>Metode Pembayaran:</strong> <span id="metodePembayaran">Memuat...</span></p> {/* */}
-                <p><strong>Catatan Tambahan:</strong> <span id="catatanTambahan">Memuat...</span></p> {/* */}
+                <h6>Detail Pesanan Anda:</h6>
+                <p><strong>Nomor Pesanan:</strong> <span id="orderId">Memuat...</span></p>
+                <p><strong>Nama Kost:</strong> <span id="summaryKostName">Memuat...</span></p>
+                <p><strong>Alamat Kost:</strong> <span id="summaryKostAddress">Memuat...</span></p>
+                <p><strong>Tanggal Check-in:</strong> <span id="tanggalSewa">Memuat...</span></p>
+                <p><strong>Durasi Sewa:</strong> <span id="durasiSewaDisplay">Memuat...</span></p>
+                <p><strong>Total Pembayaran:</strong> Rp <span id="totalBiaya">Memuat...</span></p>
+                <p><strong>Metode Pembayaran:</strong> <span id="metodePembayaran">Memuat...</span></p>
+                <p><strong>Catatan Tambahan:</strong> <span id="catatanTambahan">Memuat...</span></p>
             </div>
             <p class="mt-4 text-muted" style="font-size: 0.9rem;">
                 Harap simpan detail pesanan Anda. Jika ada pertanyaan, jangan ragu untuk menghubungi layanan pelanggan
-                {/* */}
-                kami. {/* */}
+                kami.
             </p>
-            <a href="bersih.php" class="btn btn-back-home-standalone">Cari Kost Lain</a>
+            <a href="carikost.php" class="btn btn-back-home-standalone">Cari Kost Lain</a>
             <a href="indexuser.php" class="btn btn-secondary mt-3 ml-2">Kembali ke Dashboard</a>
-            <a href="review_form.php?order_id=<?php echo htmlspecialchars($orderDetailsFromSession['orderId']); ?>&order_type=kost"
+            <a href="review_form.php?order_id=<?php echo htmlspecialchars($orderDetailsFromSession['orderId'] ?? 'N/A'); ?>&order_type=kost"
                 class="btn btn-info mt-3 ml-2">Berikan Ulasan</a>
         </div>
     </main>
@@ -296,7 +295,7 @@ if (isset($_SESSION['latestKostOrderDetails'])) { //
     <footer class="footer-custom text-center py-4">
         <div class="container">
             <p>&copy; <span id="tahunSekarangSuccess"><?php echo date("Y"); ?></span> MOVER. Hak Cipta Dilindungi.</p>
-            {/* */}
+
         </div>
     </footer>
 

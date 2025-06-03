@@ -1,0 +1,356 @@
+/* Define your colors and basic variables */
+:root {
+  --primary-bg-color: #36827f; /* Teal-ish from image */
+  --secondary-color: #ff9933; /* Orange from truck */
+  --text-color: #333;
+  --white-text: #ffffff;
+  --light-grey: #f4f7f6; /* Used as background color */
+  --dark-grey: #555;
+  --button-hover: #2a6865;
+  --border-color: #ddd;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+
+  /* Bootstrap 4 Overrides (if needed for consistency) */
+  --info-color: #17a2b8; /* Matching Bootstrap info for example */
+  --success-color: #28a745; /* Matching Bootstrap success */
+  --warning-color: #ffc107; /* Matching Bootstrap warning */
+  --danger-color: #dc3545; /* Matching Bootstrap danger */
+}
+
+/* General Body Styling */
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--light-grey); /* Set background from variable */
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header/Navbar Styling */
+.navbar {
+  background-color: var(--primary-bg-color); /* Use primary color */
+  padding: 15px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky; /* Make it sticky */
+  top: 0;
+  z-index: 1030; /* Ensure it's above other content */
+}
+
+.navbar .logo {
+  color: var(--white-text);
+  font-size: 28px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.navbar .nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .nav-links a {
+  color: var(--white-text);
+  text-decoration: none;
+  margin-left: 30px;
+  font-weight: 600;
+  font-size: 1.05em;
+  transition: color 0.3s ease;
+}
+
+.navbar .nav-links a:hover {
+  color: var(--secondary-color);
+}
+
+/* Dropdown specific styles */
+.navbar .nav-links .dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.navbar .nav-links .dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 5px;
+  overflow: hidden;
+  top: 100%; /* Position below the parent link */
+  left: 0;
+}
+
+.navbar .nav-links .dropdown-content a {
+  color: var(--text-color);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  margin-left: 0; /* Reset margin for dropdown items */
+  font-size: 1em;
+}
+
+.navbar .nav-links .dropdown-content a:hover {
+  background-color: #f1f1f1;
+  color: var(--primary-bg-color);
+}
+
+.navbar .nav-links .dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Main Content Styling */
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align items to the top, not center vertically */
+  padding: 40px 20px; /* Add padding for spacing */
+}
+
+.review-container {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 650px;
+  padding: 35px 40px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px var(--shadow-color);
+  text-align: center;
+  margin-top: 20px; /* Add some top margin to separate from navbar */
+  margin-bottom: 20px; /* Add some bottom margin */
+}
+
+.review-container h2 {
+  font-size: 32px;
+  color: var(--primary-bg-color); /* Use primary color */
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.review-container p.order-info {
+  font-size: 1.1em;
+  color: var(--dark-grey);
+  margin-bottom: 30px;
+}
+
+.review-container p.order-info span {
+  font-weight: 600;
+  color: var(--secondary-color); /* Use secondary color for emphasis */
+}
+
+.form-group {
+  margin-bottom: 25px;
+  text-align: left; /* Align labels to the left */
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 1.1em;
+}
+
+textarea {
+  width: calc(100% - 24px); /* Adjust for padding and border */
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 140px;
+  font-size: 16px;
+  line-height: 1.6;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+textarea:focus {
+  border-color: var(--primary-bg-color);
+  box-shadow: 0 0 0 3px rgba(54, 130, 127, 0.2);
+  outline: none;
+}
+
+.rating-stars {
+  display: flex;
+  justify-content: center;
+  gap: 8px; /* More space between stars */
+  margin-top: 15px;
+}
+
+.rating-stars input[type="radio"] {
+  display: none;
+}
+
+.rating-stars label {
+  cursor: pointer;
+  font-size: 45px; /* Larger stars */
+  color: #ccc;
+  transition: color 0.2s ease-in-out;
+  margin-bottom: 0;
+  line-height: 1; /* Prevent extra space around stars */
+}
+
+.rating-stars input[type="radio"]:checked ~ label,
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+  color: gold;
+}
+
+.rating-stars input[type="radio"]:checked + label {
+  color: gold;
+}
+
+button[type="submit"] {
+  /* Target submit button specifically */
+  background-color: var(--primary-bg-color);
+  color: var(--white-text);
+  padding: 14px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 19px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  margin-top: 20px;
+}
+
+button[type="submit"]:hover {
+  background-color: var(--button-hover);
+  transform: translateY(-2px);
+}
+
+button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* Message Box Styling (for success/error on a real PHP page) */
+.message-box {
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-size: 1.05em;
+  font-weight: 600;
+  text-align: left; /* Align text within message box */
+}
+
+.success-message {
+  background-color: #d4edda; /* Bootstrap success light green */
+  color: #155724; /* Bootstrap success dark green */
+  border: 1px solid #c3e6cb; /* Bootstrap success border */
+}
+
+.error-message {
+  background-color: #f8d7da; /* Bootstrap danger light red */
+  color: #721c24; /* Bootstrap danger dark red */
+  border: 1px solid #f5c6cb; /* Bootstrap danger border */
+}
+
+/* Footer Styling */
+.footer {
+  background-color: var(--primary-bg-color); /* Use primary color */
+  color: var(--white-text);
+  text-align: center;
+  padding: 20px;
+  margin-top: auto; /* Pushes footer to the bottom */
+  font-size: 0.9em;
+}
+
+/* Specific styling for the confirmation page (submit_review.php) */
+.confirmation-container {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 550px;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px var(--shadow-color);
+  text-align: center;
+  margin-top: 40px; /* Adjust margin for standalone page */
+  margin-bottom: 40px;
+}
+
+.confirmation-container h2 {
+  font-size: 36px;
+  color: #28a745; /* Success green, can use var(--success-color) if defined there */
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.confirmation-container p {
+  font-size: 1.15em;
+  color: var(--dark-grey);
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.confirmation-container .btn {
+  /* Target specific button on confirmation page */
+  background-color: var(--primary-bg-color);
+  color: var(--white-text);
+  padding: 12px 25px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  display: inline-block; /* Ensure it behaves like a block for padding/margin */
+}
+
+.confirmation-container .btn:hover {
+  background-color: var(--button-hover);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 15px 20px;
+    text-align: center;
+  }
+  .navbar .logo {
+    margin-bottom: 10px;
+  }
+  .navbar .nav-links {
+    flex-direction: column;
+    width: 100%;
+    margin-left: 0;
+  }
+  .navbar .nav-links a {
+    margin: 5px 0;
+  }
+  .navbar .nav-links .dropdown {
+    width: 100%;
+  }
+  .navbar .nav-links .dropdown-content {
+    position: static;
+    box-shadow: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    text-align: center;
+  }
+
+  .main-content {
+    padding: 20px 15px;
+  }
+  .review-container,
+  .confirmation-container {
+    padding: 25px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .review-container h2,
+  .confirmation-container h2 {
+    font-size: 28px;
+  }
+  .rating-stars label {
+    font-size: 35px;
+  }
+  button[type="submit"],
+  .confirmation-container .btn {
+    font-size: 17px;
+    padding: 12px 20px;
+  }
+}
