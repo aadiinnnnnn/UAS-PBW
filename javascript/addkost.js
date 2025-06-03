@@ -53,8 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   setupFileInput("fotoUtama", "previewFotoUtama");
-  setupFileInput("fotoDalamKamar", "previewFotoDalamKamar");
-  setupFileInput("fotoKamarMandi", "previewFotoKamarMandi");
 
   const form = document.getElementById("formTambahKostPage");
   if (form) {

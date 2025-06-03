@@ -1,0 +1,253 @@
+/* Global Reset & Font */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: #f0f2f5; /* Warna latar belakang netral */
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Navbar Styles */
+.navbar {
+  background-color: #418d99; /* Warna teal/biru dari gambar, Anda bisa sesuaikan dengan #5C95A3 jika itu yang paling baru*/
+  padding: 15px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .logo {
+  font-size: 1.8em;
+  font-weight: bold;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+}
+
+/* Style ini akan berlaku untuk link Beranda, About, dan Contact */
+.nav-menu a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.nav-menu a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Ini untuk tombol login jika ada, jika tidak ada bisa diabaikan */
+.nav-menu .login-btn {
+  background-color: white;
+  color: #418d99;
+  font-weight: bold;
+}
+.nav-menu .login-btn:hover {
+  background-color: #e6e6e6;
+}
+
+/* Dropdown for Order Button */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin-left: 20px; /* Menyamakan margin dengan item nav-menu a lainnya */
+}
+
+.order-btn {
+  /* Style untuk tombol di dalam dropdown trigger */
+  color: white;
+  text-decoration: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  background-color: transparent; /* Pastikan sama dengan nav-menu a */
+  border: none;
+  cursor: pointer;
+  font-size: 1em; /* Sesuaikan dengan ukuran font nav-menu a */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Samakan font */
+}
+
+.order-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Sama dengan hover nav-menu a */
+}
+
+.arrow {
+  font-size: 0.7em;
+  margin-left: 5px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #418d99; /* Warna sama dengan navbar */
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 5px;
+  margin-top: 5px; /* Space between button and dropdown */
+  right: 0; /* Agar dropdown muncul di kanan jika navbar diatur demikian */
+}
+
+.dropdown-content a {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  margin-left: 0;
+  border-radius: 0;
+}
+
+.dropdown-content a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Main Content Styles */
+.container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.container h1 {
+  color: #3a6a7e;
+  font-size: 2.5em;
+  margin-bottom: 40px;
+  font-weight: 600;
+}
+
+.options-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.option-card {
+  background-color: white;
+  width: 300px;
+  min-height: 280px;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.option-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.option-icon {
+  margin-bottom: 20px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.option-icon img {
+  max-width: 100px;
+  max-height: 100px;
+}
+
+.option-card h2 {
+  font-size: 1.6em;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+/* Warna spesifik untuk setiap card seperti pada gambar */
+.option-card.pindahan {
+  background-color: #fadbd8;
+}
+.option-card.pindahan h2 {
+  color: #c0392b;
+}
+
+.option-card.bersih {
+  background-color: #fef9e7;
+}
+.option-card.bersih h2 {
+  color: #b7950b;
+}
+
+.option-card.carikost {
+  background-color: #d6eaf8;
+}
+.option-card.carikost h2 {
+  color: #2e86c1;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .options-container {
+    justify-content: center;
+  }
+  .option-card {
+    width: calc(50% - 30px);
+    margin-bottom: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 15px 20px;
+  }
+  .navbar .logo {
+    margin-bottom: 10px;
+  }
+  .nav-menu {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+  }
+  .nav-menu a,
+  .nav-menu .dropdown {
+    margin-left: 0;
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: center;
+  }
+  .nav-menu .dropdown {
+    width: auto; /* Agar dropdown tidak full width jika tidak diinginkan */
+  }
+  .dropdown-content {
+    position: static;
+    box-shadow: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    text-align: center; /* Menengahkan item dropdown di mobile */
+  }
+
+  .container h1 {
+    font-size: 2em;
+  }
+  .option-card {
+    width: 80%;
+    max-width: 320px;
+  }
+}

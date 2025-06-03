@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 
 // 1. Pengecekan Sesi dan Peran
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('location: login.php'); 
+    header('location: login.php');
     exit;
 }
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'owner') {
@@ -24,34 +24,34 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'owner') {
     exit;
 }
 
-$idOwner = $_SESSION['user_id']; 
+$idOwner = $_SESSION['user_id'];
 $namaOwner = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Pemilik';
 $message = '';
 $error_message = '';
 
 // Variabel untuk menyimpan nilai form jika terjadi error validasi (sticky form)
 $form_values = [
-    'namaKost' => '', 'tipeKost' => '', 'deskripsiKost' => '', 
-    'alamatKost' => '', 'kotaKost' => '', 'provinsiKost' => '', 'linkGoogleMaps' => '', 
-    'hargaBulanan' => '', 'jumlahKamar' => '', 'infoTambahanHarga' => '', 
-    'fasilitasUmum' => [], 'fasilitasKamar' => [], 
-    'namaKontak' => '', 
+    'namaKost' => '', 'tipeKost' => '', 'deskripsiKost' => '',
+    'alamatKost' => '', 'kotaKost' => '', 'provinsiKost' => '', 'linkGoogleMaps' => '',
+    'hargaBulanan' => '', 'jumlahKamar' => '', 'infoTambahanHarga' => '',
+    'fasilitasUmum' => [], 'fasilitasKamar' => [],
+    'namaKontak' => '',
     'nomorTeleponKontak' => '',
     // Path gambar lama (berguna jika ini form edit, untuk tambah baru akan null)
-    'gambar_url_lama' => null, 
-    'gambar_dalam_kamar_url_lama' => null, 
+    'gambar_url_lama' => null,
+    'gambar_dalam_kamar_url_lama' => null,
     'gambar_kamar_mandi_url_lama' => null
 ];
 
 
 // 2. Pemrosesan Formulir Penambahan Kost
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) { 
-    
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) {
+
     // Isi $form_values dengan data POST untuk sticky form
     foreach ($form_values as $key => $value) {
         if (isset($_POST[$key])) {
             if (is_array($_POST[$key])) {
-                $form_values[$key] = $_POST[$key]; 
+                $form_values[$key] = $_POST[$key];
             } else {
                 $form_values[$key] = trim($_POST[$key]);
             }
@@ -60,15 +60,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) {
 
     $namaKost = $form_values['namaKost'];
     $tipeKost = $form_values['tipeKost'];
-    $deskripsiKost = $form_values['deskripsiKost']; 
-    
+    $deskripsiKost = $form_values['deskripsiKost'];
+
     $alamatLengkap = $form_values['alamatKost'];
-    $kotaKost = $form_values['kotaKost']; 
-    $provinsiKost = $form_values['provinsiKost']; 
-    $lokasiKostDb = $alamatLengkap; 
+    $kotaKost = $form_values['kotaKost'];
+    $provinsiKost = $form_values['provinsiKost'];
+    $lokasiKostDb = $alamatLengkap;
     if (!empty($kotaKost)) $lokasiKostDb .= ", " . htmlspecialchars($kotaKost);
     if (!empty($provinsiKost)) $lokasiKostDb .= ", " . htmlspecialchars($provinsiKost);
-    
+
     // $linkGoogleMaps = $form_values['linkGoogleMaps']; // Anda perlu kolom `link_gmaps` di DB
 
     $hargaBulananInput = $form_values['hargaBulanan'];
@@ -76,14 +76,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) {
     if ($hargaBulananInput !== '' && is_numeric($hargaBulananInput) && $hargaBulananInput >= 0) {
         $hargaSewaDb = (float)$hargaBulananInput;
     }
-    
+
     $jumlahKamarInput = $form_values['jumlahKamar'];
     $jumlahKamar = null;
     if ( $jumlahKamarInput !== '' && is_numeric($jumlahKamarInput) && $jumlahKamarInput >= 0) {
          $jumlahKamar = (int)$jumlahKamarInput;
     }
 
-    $periodeSewaDb = "Bulan"; 
+    $periodeSewaDb = "Bulan";
     // $infoTambahanHarga = $form_values['infoTambahanHarga']; // Bisa masuk ke deskripsi atau kolom baru
 
     $fasilitasUmum = $form_values['fasilitasUmum'];
@@ -91,10 +91,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) {
     $semuaFasilitas = array_merge($fasilitasUmum, $fasilitasKamar);
     $fasilitasDb = !empty($semuaFasilitas) ? implode(', ', array_map('htmlspecialchars', $semuaFasilitas)) : NULL;
 
-    $nomorTeleponKontak = $form_values['nomorTeleponKontak']; 
-    $namaKontakPerson = $form_values['namaKontak']; 
+    $nomorTeleponKontak = $form_values['nomorTeleponKontak'];
+    $namaKontakPerson = $form_values['namaKontak'];
 
-    $tersedia = 1; 
+    $tersedia = 1;
 
     // Validasi Sederhana di Sisi Server
     if (empty($namaKost) || empty($tipeKost) || empty($alamatLengkap) || $hargaSewaDb === null || $jumlahKamar === null || empty($nomorTeleponKontak) || empty($namaKontakPerson)) {
@@ -111,18 +111,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) {
     }
 
     $allowTypes = array('jpg', 'png', 'jpeg', 'gif');
-    $uploadDir = "../uploads/kost_images/"; 
+    $uploadDir = "../uploads/kost_images/"; // Pastikan ini path yang Anda inginkan. Jika ingin ke folder 'image' ganti ke "../image/"
 
     // Fungsi helper untuk unggah file
     function unggahFile($fileKey, $prefix, &$errorMessage, $existingPath = null) {
         global $uploadDir, $allowTypes;
-        $fileUrlDb = $existingPath; 
+        $fileUrlDb = $existingPath;
 
         if (isset($_FILES[$fileKey]) && $_FILES[$fileKey]['error'] == UPLOAD_ERR_OK && !empty($_FILES[$fileKey]['name'])) {
             if (!file_exists($uploadDir)) {
                 if (!mkdir($uploadDir, 0775, true)) {
                     $errorMessage .= " Gagal membuat direktori unggahan untuk {$fileKey}. Pastikan server memiliki izin tulis ke '{$uploadDir}'.";
-                    return $existingPath; 
+                    return $existingPath;
                 }
             }
             if (!empty($errorMessage) && strpos($errorMessage, "Gagal membuat direktori unggahan untuk {$fileKey}") !== false) return $existingPath;
@@ -136,7 +136,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) {
             if (in_array($fileExtension, $allowTypes)) {
                 if ($_FILES[$fileKey]["size"] <= 2097152) { // Maks 2MB
                     if (move_uploaded_file($_FILES[$fileKey]["tmp_name"], $targetFilePath)) {
-                        $fileUrlDb = "uploads/kost_images/" . $fileName; // Path relatif dari root web Anda
+                        // Path relatif dari root web Anda
+                        // Sesuaikan ini jika Anda ingin menyimpan di folder 'image' dan bukan 'uploads/kost_images/'
+                        // Misalnya: "image/" . $fileName;
+                        $fileUrlDb = "uploads/kost_images/" . $fileName;
                     } else {
                         $errorMessage .= " Gagal mengunggah {$fileKey}. Kode Error PHP: " . $_FILES[$fileKey]['error'];
                     }
@@ -153,11 +156,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) {
     }
 
     // Ambil path gambar lama dari $form_values (berguna untuk form edit, untuk tambah baru akan NULL)
-    $gambarUrlDb = $form_values['gambar_url_lama']; 
+    $gambarUrlDb = $form_values['gambar_url_lama'];
     $gambarDalamKamarUrlDb = $form_values['gambar_dalam_kamar_url_lama'];
     $gambarKamarMandiUrlDb = $form_values['gambar_kamar_mandi_url_lama'];
 
-    if (empty($error_message)) { 
+    if (empty($error_message)) {
         $gambarUrlDb = unggahFile('fotoUtama', 'fotoutama_', $error_message, $form_values['gambar_url_lama']);
         $gambarDalamKamarUrlDb = unggahFile('fotoDalamKamar', 'dalamkamar_', $error_message, $form_values['gambar_dalam_kamar_url_lama']);
         $gambarKamarMandiUrlDb = unggahFile('fotoKamarMandi', 'kamarmandi_', $error_message, $form_values['gambar_kamar_mandi_url_lama']);
@@ -166,22 +169,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) {
     if (empty($error_message)) {
         $idKosPlk = "KOS" . strtoupper(substr(md5(uniqid(rand(), true)), 0, 12));
 
-        // Kolom di tabel pengelolaan_kost: id_kos_plk, id_user, nama, lokasi, no_telp, nama_kontak_person, fasilitas, 
-        // gambar_url, gambar_dalam_kamar_url, gambar_kamar_mandi_url, 
+        // Kolom di tabel pengelolaan_kost: id_kos_plk, id_user, nama, lokasi, no_telp, nama_kontak_person, fasilitas,
+        // gambar_url, gambar_dalam_kamar_url, gambar_kamar_mandi_url,
         // deskripsi, tipe, rating (di-set NULL oleh DB), jumlah, harga_sewa, periode_sewa, tersedia
         //
-        $sql = "INSERT INTO pengelolaan_kost 
-                    (id_kos_plk, id_user, nama, lokasi, no_telp, nama_kontak_person, fasilitas, 
-                     gambar_url, gambar_dalam_kamar_url, gambar_kamar_mandi_url, 
-                     deskripsi, tipe, jumlah, harga_sewa, periode_sewa, tersedia, rating) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)"; 
+        $sql = "INSERT INTO pengelolaan_kost
+                    (id_kos_plk, id_user, nama, lokasi, no_telp, nama_kontak_person, fasilitas,
+                     gambar_url, gambar_dalam_kamar_url, gambar_kamar_mandi_url,
+                     deskripsi, tipe, jumlah, harga_sewa, periode_sewa, tersedia, rating)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)";
                 // Rating diisi NULL secara eksplisit (16 '?' sebelumnya)
 
         $stmt = $conn->prepare($sql);
         if ($stmt) {
             // bind_param sekarang memiliki 16 tipe data untuk 16 placeholder '?'
             $stmt->bind_param(
-                "ssssssssssssidsi", // 12 's', 1 'i' (jumlah), 1 'd' (harga_sewa), 1 's' (periode_sewa), 1 'i' (tersedia)
+                "ssssssssssssidsi", // <-- Pastikan string ini persis 16 karakter tanpa spasi atau karakter tersembunyi
                 $idKosPlk,
                 $idOwner,
                 $namaKost,
@@ -194,10 +197,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) {
                 $gambarKamarMandiUrlDb,
                 $deskripsiKost,
                 $tipeKost,
-                $jumlahKamar,       
-                $hargaSewaDb,       
-                $periodeSewaDb,     
-                $tersedia           
+                $jumlahKamar,
+                $hargaSewaDb,
+                $periodeSewaDb,
+                $tersedia
                 // Rating tidak di-bind karena di SQL sudah diisi NULL secara eksplisit
             );
 
@@ -382,7 +385,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) {
                 <h4><i class="fas fa-concierge-bell mr-2"></i>Fasilitas</h4>
                 <label>Fasilitas Umum (Pilih yang sesuai):</label>
                 <div class="row checkbox-group">
-                    <?php 
+                    <?php
                         $fasilitasUmumList = ["WiFi", "Dapur Bersama", "Parkir Motor", "Parkir Mobil", "Ruang Tamu", "CCTV", "Penjaga Keamanan", "Akses 24 Jam", "Mesin Cuci Bersama", "Area Jemur"];
                         $selectedFasilitasUmum = $form_values['fasilitasUmum'];
                         foreach ($fasilitasUmumList as $fu) {
@@ -395,7 +398,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) {
                 <hr>
                 <label class="mt-3">Fasilitas Kamar (Pilih yang sesuai):</label>
                 <div class="row checkbox-group">
-                    <?php 
+                    <?php
                         $fasilitasKamarList = ["AC", "Kamar Mandi Dalam", "Lemari Pakaian", "Meja Belajar", "Jendela", "Kasur", "TV Kabel", "Kulkas Mini", "Air Panas", "Ventilasi"];
                         $selectedFasilitasKamar = $form_values['fasilitasKamar'];
                         foreach ($fasilitasKamarList as $fk) {
