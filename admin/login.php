@@ -19,8 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = mysqli_real_escape_string($conn, $username); // Gunakan $conn atau variabel koneksi Anda
 
         // Query untuk mengambil data user
-        // Sesuaikan 'users' dengan nama tabel Anda dan 'nama_kolom_password' dengan kolom password Anda
-        $sql = "SELECT * FROM user WHERE username = '$username'";
+        // user table has columns: id_user, nama_user, email, no_hp, username, password, role
+        $sql = "SELECT * FROM user WHERE username = '$username'"; //
         $result = mysqli_query($conn, $sql); // Gunakan $conn atau variabel koneksi Anda
 
         if ($result && mysqli_num_rows($result) == 1) {
@@ -28,26 +28,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Verifikasi password
             // Jika password di database di-hash menggunakan password_hash()
-            if (password_verify($password, $row['password'])) {
+            if (password_verify($password, $row['password'])) { //
                 // Password benar, buat session
                 $_SESSION['loggedin'] = true;
-                $_SESSION['user_id'] = $row['id']; // Simpan ID pengguna jika perlu
-                $_SESSION['username'] = $row['username'];
+                $_SESSION['user_id'] = $row['id_user']; // Changed 'id' to 'id_user' to match DB
+                $_SESSION['username'] = $row['username']; //
+                // You might also want to store other user details in the session if needed, e.g., nama_user or role
+                // $_SESSION['nama_user'] = $row['nama_user'];
+                // $_SESSION['role'] = $row['role'];
 
                 // Redirect ke halaman indexuser.php
-                header("Location: indexuser.php");
+                header("Location: indexuser.php"); //
                 exit;
             } else {
                 // Password salah (jika menggunakan password_verify)
-                $error_message = "Username atau password salah.";
+                $error_message = "password salah."; //
             }
             
         } else {
             // Username tidak ditemukan
-            $error_message = "Username atau password salah.";
+            $error_message = "Username salah."; //
         }
     } else {
-        $error_message = "Username dan password harus diisi.";
+        $error_message = "Username dan password harus diisi."; //
     }
 }
 ?>
@@ -55,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="id">
 
 <head>
-    <meta charset="UTF-T">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Pengguna</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -92,7 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <div class="login-container">
-        <h2>Login Pengguna</h2>
+        <h2>MOVER INC</h2>
         <?php if (!empty($error_message)): ?>
         <div class="alert alert-danger" role="alert">
             <?php echo htmlspecialchars($error_message); ?>
@@ -101,18 +104,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form method="POST" action="login.php">
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="username" name="username" placeholder="Username Anda"
-                    required>
-                <label for="username">Username</label>
+                    required> <label for="username">Username</label>
             </div>
             <div class="form-floating mb-3">
                 <input type="password" class="form-control" id="password" name="password" placeholder="Password Anda"
-                    required>
-                <label for="password">Password</label>
+                    required> <label for="password">Password</label>
             </div>
             <button type="submit" class="btn btn-primary w-100">Login</button>
             <p class="mt-3 text-center">
-                Belum punya akun? <a href="registrasi.php">Daftar di sini</a>
-            </p>
+                Belum punya akun? <a href="registrasi.php">Daftar di sini</a> </p>
             <p class="mt-2 text-center">
                 <a href="../admin/index.php">Kembali ke Halaman Utama</a>
             </p>

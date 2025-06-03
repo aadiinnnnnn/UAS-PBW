@@ -1,41 +1,42 @@
 <?php
-require 'session.php'; //
+require 'session.php'; // Pastikan session sudah dimulai dan user login jika perlu
 require '../koneksi.php'; //
 
 // Daftar harga barang (SERVER-SIDE, untuk verifikasi & jika JS mati)
 $harga_barang_list_server = [
     'koper' => ['nama' => 'Koper/Tas Pakaian', 'harga' => 20000],
     'kardusSedang' => ['nama' => 'Kardus Sedang', 'harga' => 35000],
-    // ... (lengkap seperti di order.js dan order.php sebelumnya)
+    'kardusBesar' => ['nama' => 'Kardus Besar', 'harga' => 50000],
+    'lemariKecil' => ['nama' => 'Lemari Kecil', 'harga' => 100000],
+    'kasurSingle' => ['nama' => 'Kasur Single', 'harga' => 75000],
     'mejaBelajar' => ['nama' => 'Meja Belajar', 'harga' => 60000],
 ];
 $harga_per_km_server = 5000;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
-    // Ini adalah request dari JavaScript fetch
-    header('Content-Type: application/json'); // Set header untuk response JSON
-    $response_data = ['success' => false, 'message' => 'Gagal memproses permintaan.'];
+    header('Content-Type: application/json');
+    $response_data_json = ['success' => false, 'message' => 'Gagal memproses permintaan.']; // Untuk respons JSON
 
-    $asal = isset($_POST['asal']) ? trim($_POST['asal']) : '';
-    $tujuan = isset($_POST['tujuan']) ? trim($_POST['tujuan']) : '';
+    $alamat_asal = isset($_POST['asal']) ? trim($_POST['asal']) : '';
+    $alamat_tujuan = isset($_POST['tujuan']) ? trim($_POST['tujuan']) : '';
     $jarak_input = isset($_POST['jarak']) ? trim($_POST['jarak']) : '0';
-    $jarak = filter_var($jarak_input, FILTER_VALIDATE_INT, ["options" => ["min_range" => 1]]);
+    $jarak_km = filter_var($jarak_input, FILTER_VALIDATE_FLOAT, ["options" => ["min_range" => 0.1]]);
 
-    $tanggalPindah = isset($_POST['tanggalPindah']) ? $_POST['tanggalPindah'] : '';
+    $tanggal_pindah = isset($_POST['tanggalPindah']) ? $_POST['tanggalPindah'] : '';
     $barang_pilihan_client = isset($_POST['barang']) && is_array($_POST['barang']) ? $_POST['barang'] : [];
-    $catatanTambahan = isset($_POST['catatanTambahan']) ? trim($_POST['catatanTambahan']) : '';
-    $metodePembayaran = isset($_POST['metodePembayaran']) ? $_POST['metodePembayaran'] : 'OVO';
+    $catatan_tambahan = isset($_POST['catatanTambahan']) ? trim($_POST['catatanTambahan']) : '';
+    $metode_pembayaran = isset($_POST['metodePembayaran']) ? $_POST['metodePembayaran'] : 'OVO';
 
-    // Validasi Server-side (PENTING!)
-    if (empty($asal) || empty($tujuan) || $jarak === false || empty($tanggalPindah) || empty($barang_pilihan_client)) {
-        $response_data['message'] = "Data tidak lengkap. Pastikan semua field wajib diisi.";
-        echo json_encode($response_data);
+    // Validasi Server-side
+    if (empty($alamat_asal) || empty($alamat_tujuan) || $jarak_km === false || empty($tanggal_pindah) || empty($barang_pilihan_client)) {
+        $response_data_json['message'] = "Data tidak lengkap. Pastikan semua field wajib diisi dan jarak valid.";
+        echo json_encode($response_data_json);
         exit;
     }
 
-    // Kalkulasi ulang total biaya di server untuk verifikasi (PENTING!)
+    // Kalkulasi ulang total biaya di server
     $calculatedTotalBiayaServer = 0;
-    $calculatedBiayaJarakServer = $jarak * $harga_per_km_server;
+    $calculatedBiayaJarakServer = $jarak_km * $harga_per_km_server;
     $calculatedTotalBiayaServer += $calculatedBiayaJarakServer;
     $barangPindahanDisplayArray = [];
 
@@ -44,20 +45,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
             $calculatedTotalBiayaServer += $harga_barang_list_server[$item_key]['harga'];
             $barangPindahanDisplayArray[] = $harga_barang_list_server[$item_key]['nama'];
         } else {
-            $response_data['message'] = "Jenis barang tidak valid: " . htmlspecialchars($item_key);
-            echo json_encode($response_data);
+            $response_data_json['message'] = "Jenis barang tidak valid: " . htmlspecialchars($item_key);
+            echo json_encode($response_data_json);
             exit;
         }
     }
-    $barang_string_for_db = implode(", ", $barangPindahanDisplayArray);
+    $jenis_barang_for_db = implode(", ", $barangPindahanDisplayArray);
 
-
-    // Simpan ke Database
-    $orderId = "MV-" . strtoupper(substr(uniqid(), -6));
+    // Dapatkan id_user dari session
     $id_user_session = null;
-    if (isset($_SESSION['user_id'])) { // Dari login.php jika diset
+    if (isset($_SESSION['user_id'])) { // Diasumsikan 'user_id' adalah kunci session untuk ID pengguna
         $id_user_session = $_SESSION['user_id'];
-    } elseif (isset($_SESSION['username'])) { // Fallback jika hanya username yang diset
+    } elseif (isset($_SESSION['username'])) { // Fallback jika 'username' yang ada
         $stmt_get_id = $conn->prepare("SELECT id_user FROM user WHERE username = ?");
         if ($stmt_get_id) {
             $stmt_get_id->bind_param("s", $_SESSION['username']);
@@ -71,52 +70,77 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
     }
 
     if (!$id_user_session) {
-        $response_data['message'] = "Sesi pengguna tidak ditemukan. Silakan login kembali.";
-        echo json_encode($response_data);
+        $response_data_json['message'] = "Sesi pengguna tidak ditemukan. Silakan login kembali.";
+        echo json_encode($response_data_json);
         exit;
     }
 
-    $status_pesanan = "Menunggu Pembayaran";
-    $stmt = $conn->prepare("INSERT INTO pesanan (id_pesanan, id_user, alamat_asal, alamat_tujuan, jarak_km, tanggal_pindah, jenis_barang, total_biaya, metode_pembayaran, catatan_tambahan, status_pesanan, tanggal_pesan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+    $status_pesanan = "Menunggu Pembayaran"; // Default status
+
+    // ====================================================================
+    // BAGIAN PREPARE DAN BIND_PARAM YANG SUDAH DIISI
+    // ====================================================================
+    $stmt = $conn->prepare(
+        "INSERT INTO order_layanan_pindahan_barang_kos 
+        (id_user, alamat_jemput, alamat_tujuan, jarak_km, tanggal_datang_pk, jenis_barang, total_harga_pk, metode_pembayaran_pk, catatan_tambahan, status_pesanan) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    );
 
     if ($stmt) {
-        $stmt->bind_param("ssssisssdss", $orderId, $id_user_session, $asal, $tujuan, $jarak, $tanggalPindah, $barang_string_for_db, $calculatedTotalBiayaServer, $metodePembayaran, $catatanTambahan, $status_pesanan);
+        $stmt->bind_param(
+            "sssdsdssss", 
+            $id_user_session,
+            $alamat_asal,          // Variabel $alamat_asal akan masuk ke kolom alamat_jemput
+            $alamat_tujuan,
+            $jarak_km,             // Tipe 'd' untuk decimal/double
+            $tanggal_pindah,       // Variabel $tanggal_pindah akan masuk ke kolom tanggal_datang_pk
+            $jenis_barang_for_db,
+            $calculatedTotalBiayaServer, // Tipe 'd' untuk double
+            $metode_pembayaran,    // Variabel $metode_pembayaran akan masuk ke kolom metode_pembayaran_pk
+            $catatan_tambahan,
+            $status_pesanan
+        );
+    // ====================================================================
+
         if ($stmt->execute()) {
-            $response_data['success'] = true;
-            $response_data['message'] = 'Pesanan berhasil disimpan!';
-            $response_data['orderId'] = $orderId;
-            $response_data['totalBiaya'] = $calculatedTotalBiayaServer;
-            $response_data['metodePembayaran'] = $metodePembayaran;
-            $response_data['asal'] = $asal;
-            $response_data['tujuan'] = $tujuan;
-            $response_data['jarak'] = $jarak;
-            $response_data['tanggalPindah'] = $tanggalPindah;
-            $response_data['catatanTambahan'] = $catatanTambahan;
-            $response_data['barangPindahanDisplay'] = $barang_string_for_db;
-            // $response_data['isUserLoggedIn'] = true; // Contoh jika ingin mengirim status login
+            $newOrderId = mysqli_insert_id($conn); 
+
+            // Data yang akan disimpan di session untuk order_sukses.php
+            $orderDataToStoreInSession = [
+                'orderId' => $newOrderId,
+                'totalBiaya' => $calculatedTotalBiayaServer,
+                'metodePembayaran' => $metode_pembayaran,
+                'asal' => $alamat_asal,
+                'tujuan' => $alamat_tujuan,
+                'jarak' => $jarak_km,
+                'tanggalPindah' => $tanggal_pindah,
+                'barangPindahanDisplay' => $jenis_barang_for_db,
+                'catatanTambahan' => $catatan_tambahan
+            ];
+
+            $_SESSION['order_details'] = $orderDataToStoreInSession;
+
+            // Respons JSON ke JavaScript
+            $response_data_json = [
+                'success' => true,
+                'message' => 'Pesanan berhasil diproses! Anda akan dialihkan...',
+                'orderId' => $newOrderId 
+            ];
+            
         } else {
-            $response_data['message'] = "Gagal menyimpan pesanan: " . htmlspecialchars($stmt->error);
+            $response_data_json = ['success' => false, 'message' => "Gagal menyimpan pesanan: " . htmlspecialchars($stmt->error)];
         }
         $stmt->close();
     } else {
-        $response_data['message'] = "Database error (prepare statement): " . htmlspecialchars($conn->error);
+        $response_data_json = ['success' => false, 'message' => "Database error (prepare statement): " . htmlspecialchars($conn->error)];
     }
-    echo json_encode($response_data);
-    exit; // Penting untuk menghentikan eksekusi HTML di bawah jika ini adalah AJAX/fetch request
+    echo json_encode($response_data_json);
+    exit; // Penting setelah merespons AJAX
 }
 
-// ... (Sisa HTML dari order.php sebelumnya untuk tampilan form awal diletakkan di sini)
-// Ini akan menjadi fallback jika JavaScript dimatikan atau jika pengguna mengakses order.php secara langsung.
-// Jika Anda ingin halaman ini HANYA merespon AJAX, Anda bisa menghapus bagian HTML di bawah.
-// Namun, biasanya lebih baik memiliki fallback HTML.
-
-// Untuk fallback HTML (jika JS mati atau direct access), Anda bisa menggunakan logika PHP yang sudah ada di versi `order.php` tanpa JS klien.
-// Misalnya:
-$asal_php = ''; $tujuan_php = ''; // dan seterusnya untuk nilai default form jika diakses tanpa JS
-// Jika mau, bisa copy-paste bagian form HTML dari `order.php` versi "tanpa JS" ke sini.
-// Tapi untuk contoh ini, saya akan fokus pada respons AJAX di atas.
+// Bagian HTML dari order.php tetap sama seperti yang Anda miliki
+// ... (kode HTML untuk form pemesanan) ...
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -127,84 +151,122 @@ $asal_php = ''; $tujuan_php = ''; // dan seterusnya untuk nilai default form jik
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/indexuser.css">
     <style>
-    /* Tambahkan sedikit style untuk pesan error/sukses jika belum ada di indexuser.css */
-    .success-section {
-        padding: 20px;
-        text-align: center;
-        display: none;
-        /* Default disembunyikan oleh JS */
-    }
-
-    .success-card {
-        background-color: #fff;
+    /* Anda bisa menambahkan style spesifik untuk order.php di sini jika perlu */
+    /* Style dasar dari respons sebelumnya untuk kartu, dll. sudah ada di order_sukses.php */
+    /* Jika ingin konsisten, beberapa style global bisa ditaruh di indexuser.css */
+    .form-card,
+    .summary-card {
+        background-color: #ffffff;
         color: #333;
+        border: none;
         border-radius: 15px;
-        padding: 30px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        display: inline-block;
+        /* */
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
-    .success-icon {
-        font-size: 50px;
-        color: green;
-        margin-bottom: 15px;
-    }
-
-    .success-title {
-        font-size: 24px;
-        margin-bottom: 10px;
-    }
-
-    .order-details-summary {
-        text-align: left;
-        margin-top: 20px;
-    }
-
-    .order-details-summary p {
-        margin-bottom: 5px;
-    }
-
-    .order-details-summary hr {
-        margin: 10px 0;
-    }
-
-    .btn-back-home {
-        margin-top: 20px;
-        background-color: #418d99;
+    .title-order {
         color: white;
-        padding: 10px 20px;
+        font-weight: bold;
+    }
+
+    .form-title,
+    .summary-title,
+    .payment-title {
+        color: #2f4f4f;
+        font-weight: 600;
+    }
+
+    .form-label {
+        color: #495057;
+        font-weight: 500;
+    }
+
+    .form-control {
         border-radius: 8px;
-        text-decoration: none;
+        /* */
+        border: 1px solid #ced4da;
     }
 
-    .btn-back-home:hover {
-        background-color: #367a8a;
+    .btn-success-custom {
+        /* Untuk tombol "Pesan Sekarang" */
+        background-color: #ffd700;
+        /* */
+        border-color: #ffd700;
+        /* */
+        color: #2f4f4f;
+        /* */
+        font-weight: 600;
+        /* */
+        padding: 10px 20px;
     }
 
-    .content-section {
-        padding-top: 20px;
-        padding-bottom: 20px;
+    .btn-success-custom:hover {
+        background-color: #e0c200;
+        /* */
+        border-color: #e0c200;
+        /* */
     }
+
+    /* Navbar styling (jika belum tercakup oleh indexuser.css atau butuh override) */
+    .navbar {
+        padding: 20px 40px;
+    }
+
+    /* */
+    .nav-menu .order-btn {
+        /* Tombol Beranda di navbar order.php */
+        background-color: white;
+        color: #418d99;
+        padding: 8px 20px;
+        font-weight: 500;
+        border: none;
+        border-radius: 8px;
+        /* */
+    }
+
+    .nav-menu .logout-btn {
+        background-color: #FFD700;
+        color: #2f4f4f;
+        padding: 8px 20px;
+        font-weight: 500;
+        border: none;
+        border-radius: 8px;
+        /* */
+    }
+
+    .profile-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* */
     </style>
 </head>
 
-<body>
-    <header class="navbar">
-        <div class="logo">LOGO</div>
+<body style="background-color: #418d99; color:white; padding-top: 90px;">
+    <header class="navbar fixed-top" style="background-color: #418d99;">
+        <div class="logo" style="color:white;">MOVER</div>
         <nav class="nav-menu">
-            <div class="profile-icon"><img src="../assets/img/red-truck.png" alt="User Profile" /></div>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
-            <a href="order.php"><button class="order-btn" disabled>Order <span class="arrow">▶</span></button></a>
+            <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_SESSION['username'])): ?>
+            <div class="profile-icon" style="border: 2px solid white;">
+                <img src="../assets/img/default-profile.png"
+                    alt="<?php echo htmlspecialchars($_SESSION['username']); ?> Profile" />
+            </div>
+            <a href="indexuser.php" style="color:white;">Beranda</a>
             <a href="logout.php"><button class="logout-btn">Logout</button></a>
+            <?php else: ?>
+            <a href="login.php" style="color:white;">Login</a>
+            <?php endif; ?>
         </nav>
     </header>
 
     <section class="order-form-section" id="orderFormSection">
-        <div class="container my-5 content-section">
+        <div class="container my-4">
             <h2 class="text-center mb-4 title-order">Buat Pesanan Pindahan Kosan Anda</h2>
-            <div class="row">
-                <div class="col-lg-8 mb-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-7 mb-4">
                     <div class="card shadow-sm form-card">
                         <div class="card-body">
                             <h5 class="card-title mb-4 form-title">Detail Pindahan</h5>
@@ -221,10 +283,10 @@ $asal_php = ''; $tujuan_php = ''; // dan seterusnya untuk nilai default form jik
                                 </div>
                                 <div class="mb-3">
                                     <label for="jarak" class="form-label">Perkiraan Jarak (km)</label>
-                                    <input type="number" class="form-control" id="jarak" name="jarak" min="1" value="1"
-                                        required>
-                                    <small class="form-text text-muted">Jarak akan mempengaruhi biaya
-                                        pengiriman.</small>
+                                    <input type="number" class="form-control" id="jarak" name="jarak" min="0.1"
+                                        step="0.1" value="1" required>
+                                    <small class="form-text text-muted" style="color: #6c757d;">Jarak akan mempengaruhi
+                                        biaya pengiriman.</small>
                                 </div>
                                 <div class="mb-3">
                                     <label for="tanggalPindah" class="form-label">Tanggal Pindahan</label>
@@ -234,28 +296,30 @@ $asal_php = ''; $tujuan_php = ''; // dan seterusnya untuk nilai default form jik
                                 <div class="mb-3">
                                     <label class="form-label">Jenis Barang (Pilih yang sesuai)</label>
                                     <?php
-                                    // Ini untuk fallback jika JS mati, atau untuk memastikan ID-nya ada.
-                                    // Di order.js, HARGA_BARANG menggunakan key seperti 'koper', 'kardusSedang'. Pastikan ID checkbox sama.
-                                    $harga_barang_js_keys = [ // Sesuaikan dengan keys di order.js
-                                        'koper' => 'Koper/Tas Pakaian (Rp 20.000)',
-                                        'kardusSedang' => 'Kardus Sedang (Rp 35.000)',
-                                        'kardusBesar' => 'Kardus Besar (Rp 50.000)',
-                                        'lemariKecil' => 'Lemari Kecil (Rp 100.000)',
-                                        'kasurSingle' => 'Kasur Single (Rp 75.000)',
-                                        'mejaBelajar' => 'Meja Belajar (Rp 60.000)'
-                                    ];
-                                    foreach ($harga_barang_js_keys as $key => $label_text):
+                                    // Loop menggunakan $harga_barang_list_server
+                                    if (isset($harga_barang_list_server) && is_array($harga_barang_list_server)) {
+                                        foreach ($harga_barang_list_server as $key => $item):
                                     ?>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="<?php echo $key; ?>"
-                                            id="<?php echo $key; ?>" name="barang[]">
-                                        <label class="form-check-label" for="<?php echo $key; ?>">
-                                            <?php echo htmlspecialchars($label_text); ?>
+                                        <input class="form-check-input" type="checkbox"
+                                            value="<?php echo htmlspecialchars($key); ?>"
+                                            id="<?php echo htmlspecialchars($key); ?>" name="barang[]">
+                                        <label class="form-check-label" for="<?php echo htmlspecialchars($key); ?>">
+                                            <?php 
+                                            $nama_barang = isset($item['nama']) ? $item['nama'] : 'Nama tidak tersedia';
+                                            $harga_barang = isset($item['harga']) ? $item['harga'] : 0;
+                                            echo htmlspecialchars($nama_barang . " (Rp " . number_format($harga_barang) . ")"); 
+                                            ?>
                                         </label>
                                     </div>
-                                    <?php endforeach; ?>
-                                    <small class="form-text text-muted">Pilih barang-barang yang akan dipindahkan untuk
-                                        estimasi biaya.</small>
+                                    <?php 
+                                        endforeach;
+                                    } else {
+                                        echo "<p class='text-danger'>Daftar barang tidak tersedia.</p>";
+                                    }
+                                    ?>
+                                    <small class="form-text text-muted" style="color: #6c757d;">Pilih barang-barang yang
+                                        akan dipindahkan.</small>
                                 </div>
                                 <div class="mb-3">
                                     <label for="catatanTambahan" class="form-label">Catatan Tambahan (Opsional)</label>
@@ -266,8 +330,8 @@ $asal_php = ''; $tujuan_php = ''; // dan seterusnya untuk nilai default form jik
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4">
-                    <div class="card shadow-sm summary-card">
+                <div class="col-lg-5">
+                    <div class="card shadow-sm summary-card sticky-top" style="top: 100px;">
                         <div class="card-body">
                             <h5 class="card-title mb-4 summary-title">Ringkasan Biaya</h5>
                             <div class="d-flex justify-content-between mb-2">
@@ -277,7 +341,7 @@ $asal_php = ''; $tujuan_php = ''; // dan seterusnya untuk nilai default form jik
                             <div id="summaryBarang">
                             </div>
                             <hr>
-                            <div class="d-flex justify-content-between fw-bold total-price">
+                            <div class="d-flex justify-content-between fw-bold total-price" style="font-size: 1.2em;">
                                 <span>Total Biaya</span>
                                 <span id="totalBiaya">Rp 0</span>
                             </div>
@@ -294,42 +358,15 @@ $asal_php = ''; $tujuan_php = ''; // dan seterusnya untuk nilai default form jik
                                     <?php echo ($metode_html == "OVO") ? 'checked' : ''; ?>>
                                 <label class="form-check-label"
                                     for="<?php echo strtolower(str_replace(' ', '', $metode_html)); ?>">
-                                    <?php echo $metode_html; echo ($metode_html == "Bank Transfer") ? " (BCA, Mandiri, BRI)" : ""; echo ($metode_html == "Cash") ? " (Pembayaran di tempat)" : "";?>
+                                    <?php echo $metode_html; echo ($metode_html == "Bank Transfer") ? " (Virtual Account)" : ""; echo ($metode_html == "Cash") ? " (Bayar di Tempat)" : "";?>
                                 </label>
                             </div>
                             <?php endforeach; ?>
                             <button type="button" class="btn btn-success-custom w-100 mt-4" id="bayarButton"
-                                disabled>Bayar Sekarang</button>
+                                disabled>Pesan Sekarang</button>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="success-section" id="successSection">
-        <div class="container my-5">
-            <div class="success-card">
-                <div class="success-icon">&#10004;</div>
-                <h2 class="success-title">Pembayaran Berhasil!</h2>
-                <p class="success-message">Terima kasih telah menggunakan layanan Mover. Pesanan Anda telah diterima dan
-                    akan segera kami proses.</p>
-                <div class="order-details-summary">
-                    <h6>Ringkasan Pesanan Anda:</h6>
-                    <p><span><strong>Nomor Pesanan:</strong></span> <span id="orderId">#MV-XXXXXX</span></p>
-                    <p><span><strong>Total Pembayaran:</strong></span> <span id="totalPaid">Rp 0</span></p>
-                    <p><span><strong>Metode Pembayaran:</strong></span> <span id="paymentMethod"></span></p>
-                    <hr>
-                    <p><span><strong>Alamat Asal:</strong></span> <span id="summaryAsal"></span></p>
-                    <p><span><strong>Alamat Tujuan:</strong></span> <span id="summaryTujuan"></span></p>
-                    <p><span><strong>Jarak:</strong></span> <span id="summaryJarakFinal"></span> km</p>
-                    <p><span><strong>Tanggal Pindah:</strong></span> <span id="summaryTanggalPindah"></span></p>
-                    <p><span><strong>Barang Pindahan:</strong></span> <span id="summaryBarangFinal"></span></p>
-                    <p><span><strong>Catatan Tambahan:</strong></span> <span id="summaryCatatan"></span></p>
-                </div>
-                <p class="mt-4 text-muted">Tim Mover akan segera menghubungi Anda melalui nomor telepon yang terdaftar
-                    untuk konfirmasi lebih lanjut dan penjadwalan.</p>
-                <a href="indexuser.php" class="btn btn-back-home" id="backToHomeAfterOrder">Kembali ke Beranda</a>
             </div>
         </div>
     </section>
@@ -340,10 +377,7 @@ $asal_php = ''; $tujuan_php = ''; // dan seterusnya untuk nilai default form jik
     // Variabel ini akan diisi oleh PHP berdasarkan status sesi
     const isLoggedIn_php = <?php echo json_encode(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true); ?>;
     const loggedInUsername_php = <?php echo json_encode(isset($_SESSION['username']) ? $_SESSION['username'] : ''); ?>;
-    const currentPage_php = <?php echo json_encode(basename($_SERVER['PHP_SELF'])); ?>;
-    const currentDir_php = <?php echo json_encode(basename(dirname($_SERVER['PHP_SELF']))); ?>; // Misal: 'admin'
     </script>
-    <script src="../javascript/global-auth.js"></script>
 </body>
 
 </html>
