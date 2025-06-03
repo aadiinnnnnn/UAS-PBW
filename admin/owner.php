@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 
 // 1. Pengecekan Sesi Pengguna
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('location: login.php'); 
+    header('location: login.php');
     exit;
 }
 
@@ -20,8 +20,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'owner') {
     echo "<style>body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f8f9fa; }</style>";
     echo "</head><body><div class='container text-center'>";
     echo "<div class='alert alert-danger' role='alert'><h1>Akses Ditolak!</h1><p>Anda tidak memiliki izin untuk mengakses halaman ini sebagai pemilik.</p>";
-    echo "<a href='indexuser.php' class='btn btn-primary mt-3'>Kembali ke Dasbor Pengguna</a>"; 
-    echo "&nbsp;<a href='logout.php' class='btn btn-secondary mt-3'>Logout</a>"; 
+    echo "<a href='indexuser.php' class='btn btn-primary mt-3'>Kembali ke Dasbor Pengguna</a>";
+    echo "&nbsp;<a href='logout.php' class='btn btn-secondary mt-3'>Logout</a>";
     echo "</div></div></body></html>";
     exit;
 }
@@ -57,12 +57,11 @@ $pesanBaru = 0; // Placeholder, sesuaikan dengan logika pesan Anda
 // --- Pengambilan Data untuk Properti Milik Anda ---
 // Kueri ini mengambil semua kolom yang relevan, termasuk yang baru Anda tambahkan.
 // PASTIKAN tabel pengelolaan_kost memiliki kolom id_user dan terisi dengan benar.
-// **MODIFIKASI KECIL: Menambahkan semua kolom gambar yang relevan**
-$queryProperti = "SELECT id_kos_plk, nama, tipe, tersedia, jumlah, lokasi, 
-                         gambar_url, gambar_dalam_kamar_url, gambar_kamar_mandi_url, 
-                         harga_sewa, periode_sewa 
-                  FROM pengelolaan_kost 
-                  WHERE id_user = '$idPemilik' 
+$queryProperti = "SELECT id_kos_plk, nama, tipe, tersedia, jumlah, lokasi,
+                         gambar_url, gambar_dalam_kamar_url, gambar_kamar_mandi_url,
+                         harga_sewa, periode_sewa
+                  FROM pengelolaan_kost
+                  WHERE id_user = '$idPemilik'
                   ORDER BY id_kos_plk DESC";
 $resultProperti = mysqli_query($conn, $queryProperti);
 if (!$resultProperti) {
@@ -102,8 +101,7 @@ if (!$resultProperti) {
                         <a class="nav-link" href="#db-properti-saya">Properti Saya</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="tambah.php">Tambah Kost</a> {/* Ganti ke tambah.php jika itu nama file
-                        Anda */}
+                        <a class="nav-link" href="tambah.php">Tambah Kost</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOwner" role="button"
@@ -111,8 +109,7 @@ if (!$resultProperti) {
                             <i class="fas fa-user-circle"></i> <?php echo $namaPemilik; ?> (Owner)
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownOwner">
-                            <a class="dropdown-item" href="profil.php">Profil</a> {/* Ganti ke profil.php jika itu nama
-                            file Anda */}
+                            <a class="dropdown-item" href="profil.php">Profil</a>
                             <a class="dropdown-item" href="#">Pengaturan</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="logout.php">Logout</a>
@@ -171,33 +168,22 @@ if (!$resultProperti) {
                         // --- PENYESUAIAN PATH GAMBAR UNTUK DITAMPILKAN ---
                         $placeholder_img = "https://via.placeholder.com/400x300.png?text=" . urlencode($nama_kost);
                         $url_gambar_utama = $placeholder_img; // Default ke placeholder
+                      // Cek dan buat path untuk gambar_url (Foto Utama)
+                         if (!empty($properti['gambar_url'])) { // Corrected: Access 'gambar_url' from DB result
+                             $path_gambar_utama_db = $properti['gambar_url']; // Corrected: Use 'gambar_url' value
+                             // The image path stored in the DB (from tambah.php) is relative to the web root, e.g., "uploads/kost_images/..."
+                             // Since owner.php is in 'admin/', we need to go up one directory (../) to reach 'uploads/'.
+                             $url_gambar_utama = "../image/fotoutama_683f343bb603b_budi_dejek.jpeg" . htmlspecialchars($path_gambar_utama_db);
 
-                        // Cek dan buat path untuk gambar_url (Foto Utama)
-                        if (!empty($properti['image/budi dejek.jpeg'])) {
-                            $path_gambar_utama_db = $properti['../image/budi dejek.jpeg']; // misal: "image/fotoutama_xxxx.jpg"
-                            // Jika owner.php ada di /admin/ dan folder 'image' ada di / (root proyek)
-                            // maka path relatif dari owner.php ke gambar adalah "../image/fotoutama_xxxx.jpg"
-                            // Cek apakah path dari DB sudah mengandung "image/"
-                            if (strpos($path_gambar_utama_db, "image/budi dejek.jpeg") === 0) {
-                                $url_gambar_utama = "../" . htmlspecialchars($path_gambar_utama_db);
-                            } else {
-                                // Jika path tidak sesuai format yang diharapkan, tetap gunakan placeholder
-                                // Atau Anda bisa mencoba membuat path absolut jika tahu base URL
-                                // $url_gambar_utama = "http://localhost/UAS/" . htmlspecialchars($path_gambar_utama_db);
-                                // Untuk sekarang, jika tidak ada "image/", kita anggap path belum benar atau kosong
-                                 $url_gambar_utama = $placeholder_img; // kembali ke placeholder jika format path tidak dikenal
-                            }
-                             // Periksa apakah file benar-benar ada
-                            if (!file_exists(dirname(__DIR__) . '/' . $path_gambar_utama_db) && strpos($path_gambar_utama_db, "image/") === 0) { // dirname(__DIR__) akan mengarah ke root UAS jika owner.php di admin/
-                                $url_gambar_utama = "https://via.placeholder.com/400x300.png?text=File+Not+Found"; // Gambar placeholder jika file tidak ada
-                            }
-                        }
-
-
-                        // Anda bisa menambahkan logika serupa untuk gambar_dalam_kamar_url dan gambar_kamar_mandi_url jika ingin menampilkannya di kartu ini
-                        // $url_gambar_dalam_kamar = !empty($properti['gambar_dalam_kamar_url']) ? "../" . htmlspecialchars($properti['gambar_dalam_kamar_url']) : $placeholder_img;
-                        // $url_gambar_kamar_mandi = !empty($properti['gambar_kamar_mandi_url']) ? "../" . htmlspecialchars($properti['gambar_kamar_mandi_url']) : $placeholder_img;
-
+                             // Optional: Further check if the physical file exists
+                             // This assumes 'uploads' directory is directly in the project root (e.g., C:\xampp\htdocs\UAS\uploads\)
+                             if (!file_exists(dirname(dirname(__FILE__)) . 'C:\xampp\htdocs\UAS\image\budi dejek.jpeg' . $path_gambar_utama_db)) {
+                                 $url_gambar_utama = "https://via.placeholder.com/400x300.png?text=File+Not+Found"; // Placeholder if file does not exist
+                             }
+                         } else {
+                             // If gambar_url is empty or not set, use the default placeholder
+                             $url_gambar_utama = $placeholder_img;
+                         }
 
                         $harga_sewa_kost = isset($properti['harga_sewa']) && $properti['harga_sewa'] !== null ? "Rp " . number_format((float)$properti['harga_sewa'], 0, ',', '.') : "Harga belum diatur";
                         $periode_sewa_kost = !empty($properti['periode_sewa']) ? "/ " . htmlspecialchars($properti['periode_sewa']) : "";
@@ -224,8 +210,8 @@ if (!$resultProperti) {
                         echo "</div>";
                     }
                 } else {
-                    if ($resultProperti && mysqli_num_rows($resultProperti) == 0) { 
-                         echo "<div class=\"col-12\"><p class=\"text-center text-muted\">Anda belum memiliki properti kost yang terdaftar, atau tidak ada properti yang cocok. Silakan <a href='tambah.php'>tambahkan properti baru</a>.</p></div>"; // Ganti pemilik.html ke tambah.php jika itu nama file Anda
+                    if ($resultProperti && mysqli_num_rows($resultProperti) == 0) {
+                         echo "<div class=\"col-12\"><p class=\"text-center text-muted\">Anda belum memiliki properti kost yang terdaftar, atau tidak ada properti yang cocok. Silakan <a href='tambah.php'>tambahkan properti baru</a>.</p></div>";
                     }
                 }
                 ?>
@@ -242,7 +228,7 @@ if (!$resultProperti) {
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="../javascript/pemilik.js"></script> {/* Pastikan path JS benar */}
+    <script src="../javascript/pemilik.js"></script>
 </body>
 
 </html>
