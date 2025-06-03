@@ -14,65 +14,65 @@ $harga_barang_list_server = [
 $harga_per_km_server = 5000;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
-    header('Content-Type: application/json');
+    header('Content-Type: application/json'); //
     $response_data_json = ['success' => false, 'message' => 'Gagal memproses permintaan.']; // Untuk respons JSON
 
-    $alamat_asal = isset($_POST['asal']) ? trim($_POST['asal']) : '';
-    $alamat_tujuan = isset($_POST['tujuan']) ? trim($_POST['tujuan']) : '';
-    $jarak_input = isset($_POST['jarak']) ? trim($_POST['jarak']) : '0';
-    $jarak_km = filter_var($jarak_input, FILTER_VALIDATE_FLOAT, ["options" => ["min_range" => 0.1]]);
+    $alamat_asal = isset($_POST['asal']) ? trim($_POST['asal']) : ''; //
+    $alamat_tujuan = isset($_POST['tujuan']) ? trim($_POST['tujuan']) : ''; //
+    $jarak_input = isset($_POST['jarak']) ? trim($_POST['jarak']) : '0'; //
+    $jarak_km = filter_var($jarak_input, FILTER_VALIDATE_FLOAT, ["options" => ["min_range" => 0.1]]); //
 
-    $tanggal_pindah = isset($_POST['tanggalPindah']) ? $_POST['tanggalPindah'] : '';
-    $barang_pilihan_client = isset($_POST['barang']) && is_array($_POST['barang']) ? $_POST['barang'] : [];
-    $catatan_tambahan = isset($_POST['catatanTambahan']) ? trim($_POST['catatanTambahan']) : '';
-    $metode_pembayaran = isset($_POST['metodePembayaran']) ? $_POST['metodePembayaran'] : 'OVO';
+    $tanggal_pindah = isset($_POST['tanggalPindah']) ? $_POST['tanggalPindah'] : ''; //
+    $barang_pilihan_client = isset($_POST['barang']) && is_array($_POST['barang']) ? $_POST['barang'] : []; //
+    $catatan_tambahan = isset($_POST['catatanTambahan']) ? trim($_POST['catatanTambahan']) : ''; //
+    $metode_pembayaran = isset($_POST['metodePembayaran']) ? $_POST['metodePembayaran'] : 'OVO'; //
 
     // Validasi Server-side
     if (empty($alamat_asal) || empty($alamat_tujuan) || $jarak_km === false || empty($tanggal_pindah) || empty($barang_pilihan_client)) {
-        $response_data_json['message'] = "Data tidak lengkap. Pastikan semua field wajib diisi dan jarak valid.";
-        echo json_encode($response_data_json);
-        exit;
+        $response_data_json['message'] = "Data tidak lengkap. Pastikan semua field wajib diisi dan jarak valid."; //
+        echo json_encode($response_data_json); //
+        exit; //
     }
 
     // Kalkulasi ulang total biaya di server
-    $calculatedTotalBiayaServer = 0;
-    $calculatedBiayaJarakServer = $jarak_km * $harga_per_km_server;
-    $calculatedTotalBiayaServer += $calculatedBiayaJarakServer;
-    $barangPindahanDisplayArray = [];
+    $calculatedTotalBiayaServer = 0; //
+    $calculatedBiayaJarakServer = $jarak_km * $harga_per_km_server; //
+    $calculatedTotalBiayaServer += $calculatedBiayaJarakServer; //
+    $barangPindahanDisplayArray = []; //
 
-    foreach ($barang_pilihan_client as $item_key) {
-        if (isset($harga_barang_list_server[$item_key])) {
-            $calculatedTotalBiayaServer += $harga_barang_list_server[$item_key]['harga'];
-            $barangPindahanDisplayArray[] = $harga_barang_list_server[$item_key]['nama'];
+    foreach ($barang_pilihan_client as $item_key) { //
+        if (isset($harga_barang_list_server[$item_key])) { //
+            $calculatedTotalBiayaServer += $harga_barang_list_server[$item_key]['harga']; //
+            $barangPindahanDisplayArray[] = $harga_barang_list_server[$item_key]['nama']; //
         } else {
-            $response_data_json['message'] = "Jenis barang tidak valid: " . htmlspecialchars($item_key);
-            echo json_encode($response_data_json);
-            exit;
+            $response_data_json['message'] = "Jenis barang tidak valid: " . htmlspecialchars($item_key); //
+            echo json_encode($response_data_json); //
+            exit; //
         }
     }
-    $jenis_barang_for_db = implode(", ", $barangPindahanDisplayArray);
+    $jenis_barang_for_db = implode(", ", $barangPindahanDisplayArray); //
 
     // Dapatkan id_user dari session
-    $id_user_session = null;
+    $id_user_session = null; //
     if (isset($_SESSION['user_id'])) { // Diasumsikan 'user_id' adalah kunci session untuk ID pengguna
-        $id_user_session = $_SESSION['user_id'];
+        $id_user_session = $_SESSION['user_id']; //
     } elseif (isset($_SESSION['username'])) { // Fallback jika 'username' yang ada
-        $stmt_get_id = $conn->prepare("SELECT id_user FROM user WHERE username = ?");
-        if ($stmt_get_id) {
-            $stmt_get_id->bind_param("s", $_SESSION['username']);
-            $stmt_get_id->execute();
-            $result_id = $stmt_get_id->get_result();
-            if ($result_id->num_rows > 0) {
-                $id_user_session = $result_id->fetch_assoc()['id_user'];
+        $stmt_get_id = $conn->prepare("SELECT id_user FROM user WHERE username = ?"); //
+        if ($stmt_get_id) { //
+            $stmt_get_id->bind_param("s", $_SESSION['username']); //
+            $stmt_get_id->execute(); //
+            $result_id = $stmt_get_id->get_result(); //
+            if ($result_id->num_rows > 0) { //
+                $id_user_session = $result_id->fetch_assoc()['id_user']; //
             }
-            $stmt_get_id->close();
+            $stmt_get_id->close(); //
         }
     }
 
-    if (!$id_user_session) {
-        $response_data_json['message'] = "Sesi pengguna tidak ditemukan. Silakan login kembali.";
-        echo json_encode($response_data_json);
-        exit;
+    if (!$id_user_session) { //
+        $response_data_json['message'] = "Sesi pengguna tidak ditemukan. Silakan login kembali."; //
+        echo json_encode($response_data_json); //
+        exit; //
     }
 
     $status_pesanan = "Menunggu Pembayaran"; // Default status
@@ -80,14 +80,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
     // ====================================================================
     // BAGIAN PREPARE DAN BIND_PARAM YANG SUDAH DIISI
     // ====================================================================
-    $stmt = $conn->prepare(
+    $stmt = $conn->prepare( //
         "INSERT INTO order_layanan_pindahan_barang_kos 
         (id_user, alamat_jemput, alamat_tujuan, jarak_km, tanggal_datang_pk, jenis_barang, total_harga_pk, metode_pembayaran_pk, catatan_tambahan, status_pesanan) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
 
-    if ($stmt) {
-        $stmt->bind_param(
+    if ($stmt) { //
+        $stmt->bind_param( //
             "sssdsdssss", 
             $id_user_session,
             $alamat_asal,          // Variabel $alamat_asal akan masuk ke kolom alamat_jemput
@@ -102,8 +102,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
         );
     // ====================================================================
 
-        if ($stmt->execute()) {
-            $newOrderId = mysqli_insert_id($conn); 
+        if ($stmt->execute()) { //
+            $newOrderId = mysqli_insert_id($conn); //
 
             // Data yang akan disimpan di session untuk order_sukses.php
             $orderDataToStoreInSession = [
@@ -118,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
                 'catatanTambahan' => $catatan_tambahan
             ];
 
-            $_SESSION['order_details'] = $orderDataToStoreInSession;
+            $_SESSION['order_details'] = $orderDataToStoreInSession; //
 
             // Respons JSON ke JavaScript
             $response_data_json = [
@@ -128,13 +128,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
             ];
             
         } else {
-            $response_data_json = ['success' => false, 'message' => "Gagal menyimpan pesanan: " . htmlspecialchars($stmt->error)];
+            $response_data_json = ['success' => false, 'message' => "Gagal menyimpan pesanan: " . htmlspecialchars($stmt->error)]; //
         }
-        $stmt->close();
+        $stmt->close(); //
     } else {
-        $response_data_json = ['success' => false, 'message' => "Database error (prepare statement): " . htmlspecialchars($conn->error)];
+        $response_data_json = ['success' => false, 'message' => "Database error (prepare statement): " . htmlspecialchars($conn->error)]; //
     }
-    echo json_encode($response_data_json);
+    echo json_encode($response_data_json); //
     exit; // Penting setelah merespons AJAX
 }
 

@@ -2,23 +2,23 @@
 include 'session.php'; // Memastikan pengguna sudah login
 
 $status = $_GET['status'] ?? 'error'; // 'success' atau 'duplicate' atau 'error'
-$order_id_ref = $_GET['order_id'] ?? 'N/A';
-$order_type = $_GET['order_type'] ?? 'layanan';
+$order_id_ref = $_GET['order_id'] ?? 'N/A'; //
+$order_type = $_GET['order_type'] ?? 'layanan'; //
 
-$page_title = "Ulasan Gagal Terkirim!";
-$confirmation_message = "Maaf, terjadi kesalahan saat mengirim ulasan Anda. Silakan coba lagi.";
-$icon_class = "fas fa-times-circle";
+$page_title = "Ulasan Gagal Terkirim!"; //
+$confirmation_message = "Maaf, terjadi kesalahan saat mengirim ulasan Anda. Silakan coba lagi."; //
+$icon_class = "fas fa-times-circle"; //
 $icon_color = "#dc3545"; // Red
 
-if ($status == 'success') {
-    $page_title = "Review Terkirim!";
-    $confirmation_message = "Terima kasih telah meluangkan waktu untuk memberikan ulasan Anda. Masukan Anda sangat membantu kami untuk meningkatkan layanan!";
-    $icon_class = "fas fa-check-circle";
+if ($status == 'success') { //
+    $page_title = "Review Terkirim!"; //
+    $confirmation_message = "Terima kasih telah meluangkan waktu untuk memberikan ulasan Anda. Masukan Anda sangat membantu kami untuk meningkatkan layanan!"; //
+    $icon_class = "fas fa-check-circle"; //
     $icon_color = "#28a745"; // Green
-} elseif ($status == 'duplicate') {
-    $page_title = "Ulasan Sudah Ada!";
-    $confirmation_message = "Anda sudah pernah memberikan ulasan untuk order ini. Terima kasih atas feedback Anda sebelumnya!";
-    $icon_class = "fas fa-info-circle";
+} elseif ($status == 'duplicate') { //
+    $page_title = "Ulasan Sudah Ada!"; //
+    $confirmation_message = "Anda sudah pernah memberikan ulasan untuk order ini. Terima kasih atas feedback Anda sebelumnya!"; //
+    $icon_class = "fas fa-info-circle"; //
     $icon_color = "#ffc107"; // Yellow/Orange
 }
 
@@ -46,9 +46,7 @@ if ($status == 'success') {
 
     .confirmation-container h2 {
         font-size: 2rem;
-        /* Ukuran font lebih kecil agar tidak terlalu besar */
         color: #367A83;
-        /* Warna MOVER primary */
         font-weight: 700;
     }
 
@@ -61,7 +59,6 @@ if ($status == 'success') {
 
     .confirmation-container .btn {
         background-color: var(--primary-bg-color);
-        /* Dari rating.css */
         color: var(--white-text);
         padding: 12px 25px;
         border-radius: 8px;

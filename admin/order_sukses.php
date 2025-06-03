@@ -3,10 +3,10 @@ require 'session.php'; // Memastikan pengguna sudah login
 
 $orderDetailsFromSession = null;
 // Coba ambil detail pesanan dari session PHP
-if (isset($_SESSION['latestBersihOrderDetails'])) {
-    $orderDetailsFromSession = $_SESSION['latestBersihOrderDetails'];
+if (isset($_SESSION['order_details'])) {
+    $orderDetailsFromSession = $_SESSION['order_details'];
     // Opsional: Unset session di sini jika sudah tidak diperlukan lagi
-    // unset($_SESSION['latestBersihOrderDetails']);
+    // unset($_SESSION['order_details']); // [Peninjauan]: Aktifkan ini jika ingin menghapus data session setelah ditampilkan.
 }
 ?>
 <!DOCTYPE html>
@@ -15,11 +15,11 @@ if (isset($_SESSION['latestBersihOrderDetails'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOVER - Pesanan Jasa Bersih Berhasil</title>
+    <title>MOVER - Pesanan Pindahan Berhasil</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="../css/common.css">
-    <link rel="stylesheet" href="../css/bersih.css">
+    <link rel="stylesheet" href="../css/order.css"> {/* Assuming order.css has relevant success page styles */}
     <style>
     /* Gaya khusus untuk halaman sukses ini */
     body.order-success-page {
@@ -29,7 +29,7 @@ if (isset($_SESSION['latestBersihOrderDetails'])) {
         min-height: 100vh;
     }
 
-    .success-card-container {
+    .success-card-container-standalone {
         flex-grow: 1;
         display: flex;
         align-items: center;
@@ -153,20 +153,23 @@ if (isset($_SESSION['latestBersihOrderDetails'])) {
         </nav>
     </header>
 
-    <main class="success-card-container">
+    <main class="success-card-container-standalone">
         <div class="success-card-standalone">
             <div class="success-icon-standalone"><i class="fas fa-check-circle"></i></div>
-            <h2 class="success-title-standalone">Pesanan Jasa Bersih Anda Telah Diterima!</h2>
+            <h2 class="success-title-standalone">Pesanan Pindahan Anda Telah Diterima!</h2>
             <p class="success-message-standalone">
-                Terima kasih telah memilih MOVER. Pesanan jasa bersih Anda sedang kami proses.
+                Terima kasih telah memilih MOVER. Pesanan pindahan Anda sedang kami proses.
                 Tim kami akan segera menghubungi Anda untuk konfirmasi lebih lanjut.
             </p>
             <div class="order-details-summary-standalone">
                 <h6>Detail Pesanan Anda:</h6>
                 <p><strong>Nomor Pesanan:</strong> <span id="orderId">Memuat...</span></p>
-                <p><strong>Paket Jasa:</strong> <span id="paketJasa">Memuat...</span></p>
-                <p><strong>Deskripsi Paket:</strong> <span id="deskripsiPaket">Memuat...</span></p>
-                <p><strong>Tanggal Pelaksanaan:</strong> <span id="tanggalPelaksanaan">Memuat...</span></p>
+                <p><strong>Alamat Jemput:</strong> <span id="alamatJemput">Memuat...</span></p>
+                <p><strong>Alamat Tujuan:</strong> <span id="alamatTujuan">Memuat...</span></p>
+                <p><strong>Jarak:</strong> <span id="jarakKm">Memuat...</span> km</p>
+                <p><strong>Tanggal Pindahan:</strong> <span id="tanggalPindahan">Memuat...</span></p>
+                <p><strong>Barang Pindahan:</strong> <span id="barangPindahan">Memuat...</span></p>
+                <p><strong>Catatan Tambahan:</strong> <span id="catatanTambahan">Memuat...</span></p>
                 <p><strong>Total Pembayaran:</strong> Rp <span id="totalBiaya">Memuat...</span></p>
                 <p><strong>Metode Pembayaran:</strong> <span id="metodePembayaran">Memuat...</span></p>
             </div>
@@ -174,16 +177,16 @@ if (isset($_SESSION['latestBersihOrderDetails'])) {
                 Harap simpan detail pesanan Anda. Jika ada pertanyaan, jangan ragu untuk menghubungi layanan pelanggan
                 kami.
             </p>
-            <a href="bersih.php" class="btn btn-back-home-standalone">Pesan Jasa Bersih Lain</a>
+            <a href="order.php" class="btn btn-back-home-standalone">Pesan Pindahan Lain</a>
             <a href="indexuser.php" class="btn btn-secondary mt-3 ml-2">Kembali ke Dashboard</a>
-            <a href="review_form.php?order_id=<?php echo htmlspecialchars($orderDetailsFromSession['orderId'] ?? 'N/A'); ?>&order_type=bersih"
+            <a href="review_form.php?order_id=<?php echo htmlspecialchars($orderDetailsFromSession['orderId'] ?? 'N/A'); ?>&order_type=pindahan"
                 class="btn btn-info mt-3 ml-2">Berikan Ulasan</a>
         </div>
     </main>
 
     <footer class="footer-custom text-center py-4">
         <div class="container">
-            <p>&copy; <span id="tahunSekarangSuccess"><?php echo date("Y"); ?></span> MOVER. Hak Cipta Dilindungi.</p>
+            <p>&copy; <span id="tahunSekarangSuccess"></span> MOVER. Hak Cipta Dilindungi.</p>
         </div>
     </footer>
 
@@ -197,30 +200,34 @@ if (isset($_SESSION['latestBersihOrderDetails'])) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Set tahun sekarang di footer (jika belum ada di common.js/footer global)
+        // Set tahun sekarang di footer
         const tahunElement = document.getElementById("tahunSekarangSuccess");
         if (tahunElement) {
             tahunElement.textContent = new Date().getFullYear();
         }
 
         const orderIdEl = document.getElementById("orderId");
-        const paketJasaEl = document.getElementById("paketJasa");
-        const deskripsiPaketEl = document.getElementById("deskripsiPaket");
-        const tanggalPelaksanaanEl = document.getElementById("tanggalPelaksanaan");
+        const alamatJemputEl = document.getElementById("alamatJemput");
+        const alamatTujuanEl = document.getElementById("alamatTujuan");
+        const jarakKmEl = document.getElementById("jarakKm");
+        const tanggalPindahanEl = document.getElementById("tanggalPindahan");
+        const barangPindahanEl = document.getElementById("barangPindahan");
+        const catatanTambahanEl = document.getElementById("catatanTambahan");
         const totalBiayaEl = document.getElementById("totalBiaya");
         const metodePembayaranEl = document.getElementById("metodePembayaran");
 
-        // Ambil data dari variabel global phpOrderDetails (dari PHP session)
         const orderDetails = phpOrderDetails;
 
         if (orderDetails) {
             if (orderIdEl) orderIdEl.textContent = orderDetails.orderId || "Tidak Tersedia";
-            if (paketJasaEl) paketJasaEl.textContent = orderDetails.jenis_paket_bk || "Tidak Diketahui";
-            if (deskripsiPaketEl) deskripsiPaketEl.textContent = orderDetails.deskripsi_paket || "-";
+            if (alamatJemputEl) alamatJemputEl.textContent = orderDetails.asal || "Tidak Tersedia";
+            if (alamatTujuanEl) alamatTujuanEl.textContent = orderDetails.tujuan || "Tidak Tersedia";
+            if (jarakKmEl) jarakKmEl.textContent = orderDetails.jarak !== undefined ? parseFloat(orderDetails
+                .jarak).toFixed(1).replace(/\.0$/, '') : "Tidak Tersedia";
 
-            if (tanggalPelaksanaanEl && orderDetails.tanggal_datang_bk) {
+            if (tanggalPindahanEl && orderDetails.tanggalPindah) {
                 try {
-                    const date = new Date(orderDetails.tanggal_datang_bk + "T00:00:00");
+                    const date = new Date(orderDetails.tanggalPindah + "T00:00:00");
                     if (!isNaN(date.getTime())) {
                         const options = {
                             day: "numeric",
@@ -228,32 +235,40 @@ if (isset($_SESSION['latestBersihOrderDetails'])) {
                             year: "numeric",
                             timeZone: "UTC"
                         };
-                        tanggalPelaksanaanEl.textContent = date.toLocaleDateString("id-ID", options);
+                        tanggalPindahanEl.textContent = date.toLocaleDateString("id-ID", options);
                     } else {
-                        tanggalPelaksanaanEl.textContent = orderDetails.tanggal_datang_bk;
+                        tanggalPindahanEl.textContent = orderDetails.tanggalPindah;
                     }
                 } catch (e) {
-                    console.error("Error parsing tanggal pelaksanaan:", e);
-                    tanggalPelaksanaanEl.textContent = "Tidak Tersedia";
+                    console.error("Error parsing tanggal pindahan:", e);
+                    tanggalPindahanEl.textContent = "Tidak Tersedia";
                 }
-            } else if (tanggalPelaksanaanEl) {
-                tanggalPelaksanaanEl.textContent = "Tidak Tersedia";
+            } else if (tanggalPindahanEl) {
+                tanggalPindahanEl.textContent = "Tidak Tersedia";
             }
 
+            if (barangPindahanEl) barangPindahanEl.textContent = orderDetails.barangPindahanDisplay ||
+                "Tidak Ada";
+            if (catatanTambahanEl) catatanTambahanEl.textContent = orderDetails.catatanTambahan && orderDetails
+                .catatanTambahan.trim() !== "" ? orderDetails.catatanTambahan : "-";
+
             if (totalBiayaEl) {
-                totalBiayaEl.textContent = orderDetails.total_harga_bk !== undefined ? parseFloat(orderDetails
-                    .total_harga_bk).toLocaleString("id-ID") : "Tidak Diketahui";
+                totalBiayaEl.textContent = orderDetails.totalBiaya !== undefined ? parseFloat(orderDetails
+                    .totalBiaya).toLocaleString("id-ID") : "Tidak Diketahui";
             }
-            if (metodePembayaranEl) metodePembayaranEl.textContent = orderDetails.metode_pembayaran_bk ||
+            if (metodePembayaranEl) metodePembayaranEl.textContent = orderDetails.metodePembayaran ||
                 "Tidak Diketahui";
 
         } else {
             // Jika tidak ada detail pesanan (misal diakses langsung)
             const defaultText = "Tidak Dapat Dimuat";
             if (orderIdEl) orderIdEl.textContent = defaultText;
-            if (paketJasaEl) paketJasaEl.textContent = defaultText;
-            if (deskripsiPaketEl) deskripsiPaketEl.textContent = defaultText;
-            if (tanggalPelaksanaanEl) tanggalPelaksanaanEl.textContent = defaultText;
+            if (alamatJemputEl) alamatJemputEl.textContent = defaultText;
+            if (alamatTujuanEl) alamatTujuanEl.textContent = defaultText;
+            if (jarakKmEl) jarakKmEl.textContent = defaultText;
+            if (tanggalPindahanEl) tanggalPindahanEl.textContent = defaultText;
+            if (barangPindahanEl) barangPindahanEl.textContent = defaultText;
+            if (catatanTambahanEl) catatanTambahanEl.textContent = "-";
             if (totalBiayaEl) totalBiayaEl.textContent = defaultText;
             if (metodePembayaranEl) metodePembayaranEl.textContent = defaultText;
 
