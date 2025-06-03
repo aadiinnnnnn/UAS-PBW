@@ -1,0 +1,307 @@
+/* common.css */
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative; /* Penting untuk Bootstrap Scrollspy */
+}
+
+main {
+  flex-grow: 1;
+}
+
+/* === HEADER UMUM === */
+.header-custom {
+  background-color: #367a83; /* Warna teal/biru utama */
+  padding: 10px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1030; /* Untuk sticky-top */
+}
+
+.header-custom .navbar-brand {
+  font-weight: bold;
+  color: white !important;
+  font-size: 1.7em;
+  letter-spacing: 1px;
+}
+
+.header-custom .nav-link {
+  color: white !important;
+  margin-left: 15px;
+  font-size: 1em;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.header-custom .nav-link:hover,
+.header-custom .nav-link:focus {
+  color: #e0e0e0 !important;
+}
+
+/* Gaya untuk link navigasi yang aktif (oleh Bootstrap atau manual) */
+.header-custom .nav-item.active > .nav-link {
+  color: #f5a623 !important; /* Warna aksen oranye untuk aktif */
+  font-weight: bold;
+}
+
+.header-custom .dropdown-menu {
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 0.5rem;
+}
+
+.header-custom .dropdown-item {
+  transition: background-color 0.2s ease, color 0.2s ease;
+  padding: 0.5rem 1.5rem;
+}
+
+.header-custom .dropdown-item:hover,
+.header-custom .dropdown-item:focus {
+  background-color: #f0f0f0;
+  color: #333 !important;
+}
+.header-custom .dropdown-item.active-dropdown {
+  background-color: #e9ecef;
+  color: #f5a623 !important;
+  font-weight: bold;
+}
+
+.header-custom .btn-login {
+  background-color: white;
+  color: #367a83 !important;
+  border-color: white;
+  font-weight: bold;
+  border-radius: 20px;
+  padding: 8px 20px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.header-custom .btn-login:hover {
+  background-color: #f0f0f0;
+  color: #2a5f68 !important;
+}
+
+/* === FOOTER UMUM === */
+.footer-custom {
+  background-color: #343a40;
+  color: white;
+  padding: 20px 0;
+  margin-top: auto;
+}
+.footer-custom p {
+  margin-bottom: 0;
+  font-size: 0.9em;
+}
+
+/* === GAYA FORM UMUM (Bootstrap Overrides Ringan & Tambahan) === */
+.form-group label {
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 0.3rem;
+}
+
+.form-control,
+.custom-select {
+  border-radius: 8px !important;
+  border: 1px solid #ced4da;
+  height: calc(1.5em + 0.75rem + 7px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.form-control:focus,
+.custom-select:focus {
+  border-color: #f5a623 !important;
+  box-shadow: 0 0 0 0.2rem rgba(245, 166, 35, 0.25) !important;
+}
+textarea.form-control {
+  height: auto;
+}
+
+.custom-file-label {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  height: calc(1.5em + 0.75rem + 7px);
+  padding: 0.375rem 0.75rem;
+  line-height: 1.5;
+  color: #495057;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.custom-file-label::after {
+  content: attr(data-browse) !important;
+  background-color: #e9ecef;
+  color: #495057;
+  border-left: 1px solid #ced4da;
+  border-radius: 0 8px 8px 0 !important;
+  height: calc(1.5em + 0.75rem + 5px);
+  padding: 0.375rem 0.75rem;
+  line-height: 1.5;
+}
+.custom-file-input:focus ~ .custom-file-label {
+  border-color: #f5a623;
+  box-shadow: 0 0 0 0.2rem rgba(245, 166, 35, 0.25);
+}
+
+/* === UNTUK SCROLLSPY DENGAN HEADER STICKY === */
+.scrollspy-section {
+  padding-top: 85px; /* Sesuaikan dengan tinggi header + buffer */
+  margin-top: -70px; /* Sesuaikan agar pas, biasanya sedikit lebih kecil */
+}
+
+/* === JUDUL HALAMAN/SEKSI UMUM  === */
+.page-main-title {
+  /* Judul utama H2 di setiap halaman (di luar card) */
+  color: #367a83;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+.section-title {
+  /* Judul seksi h4 di dashboard atau dalam card */
+  color: #367a83;
+  font-weight: 600; /* Sedikit lebih ringan dari page-main-title */
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #f5a623; /* Aksen oranye */
+  display: inline-block; /* Agar border hanya selebar teks */
+}
+
+/* === Tambahan Gaya untuk Navbar (konsisten dengan carikost.css yang Anda berikan) === */
+.header-custom .profile-icon-sm {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 8px;
+  border: 1px solid white;
+  object-fit: cover;
+}
+.header-custom .order-btn-nav {
+  /* Tombol "Order Layanan Lain" */
+  background-color: #f5a623; /* Warna aksen oranye */
+  color: white !important;
+  padding: 8px 15px !important;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+.header-custom .order-btn-nav:hover {
+  background-color: #db8e1e;
+}
+.navbar-nav .dropdown-toggle::after {
+  /* Panah dropdown */
+  margin-left: 0.5em;
+}
+
+/* style.css (Untuk Halaman Bersih Kos - Telah Disesuaikan) */
+
+body {
+  background-color: #f8f9fa;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.container {
+  max-width: 700px;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 40px;
+  margin-bottom: 40px; /* Tambahkan margin bawah */
+}
+
+h2 {
+  color: #367a83; /* Warna teal/biru utama dari common.css */
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-align: center; /* Tengahkan judul */
+}
+
+.form-check-label,
+.form-label {
+  font-weight: 500;
+  color: #495057; /* Warna teks label konsisten dengan common.css */
+}
+
+#ringkasanDetail {
+  background-color: #f1f3f5;
+  font-size: 0.95rem;
+  border-radius: 8px; /* Tambahkan border-radius */
+  padding: 15px; /* Tambahkan padding */
+}
+
+#totalBiayaText {
+  font-size: 1.1rem;
+  color: #f5a623; /* Warna aksen oranye yang konsisten */
+  font-weight: bold;
+}
+
+.btn.btn-pesan {
+  width: 100%;
+  padding: 10px;
+  font-weight: bold;
+  background-color: #f5a623; /* Warna aksen oranye konsisten */
+  color: white; /* Teks putih */
+  border-color: #f5a623;
+  border-radius: 8px; /* Konsisten dengan tombol lain */
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.btn.btn-pesan:hover {
+  background-color: #db8e1e;
+  border-color: #db8e1e;
+}
+
+select.form-select,
+.form-control {
+  border-radius: 8px !important;
+  border: 1px solid #ced4da;
+  height: calc(1.5em + 0.75rem + 7px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+select.form-select:focus,
+.form-control:focus {
+  border-color: #f5a623 !important;
+  box-shadow: 0 0 0 0.2rem rgba(245, 166, 35, 0.25) !important;
+}
+
+/* Alert styles for Bootstrap 4 */
+.alert {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+/* Perbaikan untuk tombol close Bootstrap 4 */
+.alert .close {
+  font-size: 1.5rem; /* Ukuran font lebih besar agar terlihat jelas */
+  font-weight: 700;
+  line-height: 1;
+  color: #000; /* Warna lebih gelap */
+  text-shadow: 0 1px 0 #fff;
+  opacity: 0.5;
+  float: right; /* Pastikan tetap di kanan */
+  padding: 0; /* Hapus padding yang mungkin mengganggu */
+  background: none; /* Hapus background jika ada */
+  border: none; /* Hapus border jika ada */
+  cursor: pointer;
+}
+.alert .close:hover {
+  color: #000;
+  text-decoration: none;
+  opacity: 0.75;
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+}

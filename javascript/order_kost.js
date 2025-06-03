@@ -121,8 +121,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const formOrderKost = document.getElementById("formOrderKost");
   if (formOrderKost) {
+    // Menangkap klik pada link "Pesan Kost" dan mencegah perilaku default
+    const submitOrderLink = document.getElementById("submitOrderLink");
+    if (submitOrderLink) {
+      submitOrderLink.addEventListener("click", function (event) {
+        event.preventDefault(); // Mencegah navigasi langsung
+        // Memicu submit form secara programatis
+        formOrderKost.dispatchEvent(new Event("submit", { cancelable: true }));
+      });
+    }
+
     formOrderKost.addEventListener("submit", function (event) {
-      event.preventDefault();
+      event.preventDefault(); // Mencegah pengiriman formulir default
 
       const termsAgreement = document.getElementById("termsAgreement");
       if (!termsAgreement.checked) {
@@ -134,20 +144,21 @@ document.addEventListener("DOMContentLoaded", function () {
       let isValid = true;
       let firstInvalidField = null;
       formOrderKost.querySelectorAll("[required]").forEach((input) => {
-        input.classList.remove("is-invalid");
+        input.classList.remove("is-invalid"); // Hapus kelas invalid dari validasi sebelumnya
         let value = input.value.trim();
         if (input.type === "radio" || input.type === "checkbox") {
+          // Khusus untuk radio/checkbox, cek apakah ada yang terpilih dalam grup
           if (input.name) {
             const group = formOrderKost.querySelectorAll(`input[name="${input.name}"]`);
             const isGroupChecked = Array.from(group).some((rb) => rb.checked);
             if (!isGroupChecked && input.required) {
               isValid = false;
-              if (!firstInvalidField) firstInvalidField = input;
+              if (!firstInvalidField) firstInvalidField = input; // Ambil elemen pertama yang tidak valid
             }
           }
         } else if (!value) {
           isValid = false;
-          input.classList.add("is-invalid");
+          input.classList.add("is-invalid"); // Tandai input yang tidak valid
           if (!firstInvalidField) firstInvalidField = input;
         }
       });
@@ -158,62 +169,64 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      const formData = new FormData(formOrderKost);
-      const orderData = {};
-      formData.forEach((value, key) => {
-        orderData[key] = value;
-      });
+      // Ambil data untuk dikirim
+      const orderData = {
+        idKost: document.getElementById("hiddenIdKost")?.value || "N/A",
+        fullName: document.getElementById("fullName").value,
+        email: document.getElementById("email").value,
+        phoneNumber: document.getElementById("phoneNumber").value,
+        checkInDate: document.getElementById("checkInDate").value,
+        duration: document.getElementById("duration").value,
+        totalPrice: parseFloat(totalPriceDisplayEl?.textContent.replace(/\D/g, "")) || 0, // Pastikan ini angka bersih
+        paymentMethod: document.querySelector('input[name="paymentMethod"]:checked')?.value || "",
+        notes: document.getElementById("notes").value,
+        // Tambahkan data kost yang mungkin dibutuhkan di backend untuk session
+        kostName: summaryKostNameEl?.textContent || "Kost Tidak Diketahui",
+        kostAddress: summaryKostAddressEl?.textContent || "Alamat Kost Tidak Tersedia",
+      };
 
-      orderData.idKost = document.getElementById("hiddenIdKost")?.value || "N/A";
-      orderData.kostName = summaryKostNameEl?.textContent || "Kost Tidak Diketahui";
-      orderData.kostAddress = summaryKostAddressEl?.textContent || "Alamat Kost Tidak Tersedia";
-      orderData.basePrice = basePriceKost;
-      orderData.totalPrice = parseFloat(totalPriceDisplayEl?.textContent.replace(/\D/g, "")) || 0;
-      orderData.displayPricePerDuration = pricePerDurationDisplayEl?.textContent || "-";
-
-      const simulatedOrderId = "KOSTORDER-" + Math.floor(Math.random() * 899999 + 100000);
-      orderData.orderId = simulatedOrderId;
-
-      console.log("Data Pemesanan Kost (akan dikirim ke backend):", orderData);
       showToast("Pesanan Anda sedang diproses...", "info");
 
-      // SIMULASI PENGIRIMAN KE BACKEND (dan pengalihan)
-      // Jika Anda sudah mengimplementasikan orderkost_data.php untuk memproses dan menyimpan ke DB,
-      // Anda akan mengganti blok setTimeout ini dengan fetch() ke orderkost_data.php.
-      setTimeout(() => {
-        // Anggap ini adalah respons dari orderkost_data.php
-        const backendResponse = {
-          success: true, // Ini akan true jika orderkost_data.php berhasil menyimpan
-          message: "Pemesanan kost berhasil!", // Pesan dari orderkost_data.php
-          orderId: orderData.orderId, // ID dari orderkost_data.php (hasil $stmt->insert_id)
-        };
-
-        if (backendResponse.success) {
-          // Data yang akan dikirim ke halaman sukses (via localStorage atau session yang di-set oleh backend)
-          // orderkost_data.php sudah mengatur $_SESSION['latestKostOrderDetails']
-          // Jadi, localStorage ini berfungsi sebagai fallback atau jika Anda belum sepenuhnya
-          // mengandalkan session yang di-set oleh orderkost_data.php.
-          // Jika orderkost_data.php sudah benar mengisi session, baris localStorage.setItem ini bisa di-skip.
-          localStorage.setItem(
-            "latestKostOrderDetails",
-            JSON.stringify({
-              ...orderData, // Data dari form
-              // Tambahkan data yang mungkin dikembalikan oleh backend jika ada,
-              // misalnya ID pesanan asli jika berbeda dari yang disimulasikan.
-              // Di sini, orderData sudah mencakup simulatedOrderId.
-              // Jika backendResponse.orderId adalah ID asli dari DB, gunakan itu.
-              orderId: backendResponse.orderId, // Gunakan orderId dari respons backend
-              serverMessage: backendResponse.message,
-            })
-          );
-
-          // === PERBAIKAN UTAMA ADA DI SINI ===
-          window.location.href = "order_kost_sukses.php";
-          // =================================
-        } else {
-          showToast("Gagal memproses pesanan: " + (backendResponse.message || "Silakan coba lagi."), "error");
-        }
-      }, 1500); // Mengurangi delay untuk testing, sesuaikan jika perlu
+      // Kirim data ke orderkost_data.php
+      fetch("../admin/orderkost_data.php", {
+        // Pastikan path ke script backend ini benar
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json", // Mengharapkan respons JSON dari server
+        },
+        body: JSON.stringify(orderData), // Kirim objek data sebagai JSON string
+      })
+        .then((response) => {
+          // Cek jika respons HTTP tidak OK (misal 404, 500)
+          if (!response.ok) {
+            // Coba parse respons sebagai JSON untuk mendapatkan pesan error dari server
+            return response
+              .json()
+              .then((errorData) => {
+                throw new Error(errorData.message || `Server error: ${response.status}`);
+              })
+              .catch(() => {
+                // Jika tidak bisa parse JSON, fallback ke pesan error generik
+                throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
+              });
+          }
+          return response.json(); // Jika respons OK, parse JSON
+        })
+        .then((data) => {
+          if (data.success) {
+            showToast("Pemesanan berhasil! Mengalihkan ke halaman sukses...", "success");
+            // Redirect ke halaman sukses setelah menerima respons sukses dari server
+            window.location.href = "order_kost_sukses.php";
+          } else {
+            // Tampilkan pesan error dari server jika `success` false
+            showToast("Gagal memproses pesanan: " + (data.message || "Terjadi kesalahan yang tidak diketahui."), "error");
+          }
+        })
+        .catch((error) => {
+          console.error("Error saat mengirim pesanan:", error);
+          showToast("Terjadi kesalahan koneksi atau server: " + error.message, "error", 5000);
+        });
     });
   }
 });
