@@ -16,9 +16,18 @@ require 'session.php';
     <header class="navbar">
         <div class="logo">LOGO MOVER</div>
         <nav class="nav-menu">
-            <div class="profile-icon">
-                <img src="../assets/img/default-profile.png" alt="User Profile" />
-            </div>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOwner" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <?php echo htmlspecialchars($_SESSION['username']); ?>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownOwner">
+                    <a class="dropdown-item" href="profil.php">Profil</a>
+                    <a class="dropdown-item" href="#">Pengaturan</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="logout.php">Logout</a>
+                </div>
+            </li>
             <a href="#">About</a>
             <a href="#">Contact</a>
             <a href="logout.php">
