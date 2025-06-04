@@ -1,74 +1,99 @@
+// Di dalam file bersih.js
 document.addEventListener("DOMContentLoaded", function () {
-  // Set tanggal minimum untuk input tanggal_datang
+  // ... (kode formatRupiah Anda) ...
+
+  const paketRadios = document.querySelectorAll(".paket-radio");
+  const paketCards = document.querySelectorAll(".paket-card"); // Ambil semua kartu paket
+  const ringkasanDetailEl = document.getElementById("ringkasanDetail");
+  const totalBiayaTextEl = document.getElementById("totalBiayaText");
+  const totalBiayaInputEl = document.getElementById("total_biaya_input");
+  const namaPaketInputEl = document.getElementById("nama_paket_input");
+  const idBkInputEl = document.getElementById("id_bk_input");
   const tanggalDatangInput = document.getElementById("tanggal_datang");
-  if (tanggalDatangInput) {
-    const today = new Date().toISOString().split("T")[0];
-    tanggalDatangInput.setAttribute("min", today);
-  }
 
-  // Format angka ke dalam format mata uang Rupiah
-  function formatRupiah(angka) {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-    }).format(angka);
-  }
-
-  // Fungsi utama untuk memperbarui total dan ringkasan
   function updateTotal() {
     let total = 0;
-    let ringkasanHtml = "";
+    let ringkasanHtml = '<p class="text-muted">Pilih paket untuk melihat rincian.</p>';
     let idBk = "";
     let namaPaketText = "";
 
-    // Ambil elemen DOM
-    const ringkasanDetailEl = document.getElementById("ringkasanDetail");
-    const totalBiayaTextEl = document.getElementById("totalBiayaText");
-    const totalBiayaInputEl = document.getElementById("total_biaya_input");
-    const namaPaketInputEl = document.getElementById("nama_paket_input"); // Perbaikan ID
-    const idBkInputEl = document.getElementById("id_bk_input"); // Perbaikan ID
-
-    // Cari radio button yang dipilih
     const paketTerpilih = document.querySelector('input[name="paket_kos"]:checked');
 
     if (paketTerpilih) {
-      const hargaPaket = parseFloat(paketTerpilih.value); // Gunakan parseFloat untuk harga
+      const hargaPaket = parseFloat(paketTerpilih.value);
       namaPaketText = paketTerpilih.getAttribute("data-nama");
-      idBk = paketTerpilih.getAttribute("data-idbk"); // Ambil id_bk
+      idBk = paketTerpilih.getAttribute("data-idbk");
 
       total = hargaPaket;
 
-      // Ringkasan HTML
       ringkasanHtml = `
                 <div class="d-flex justify-content-between">
-                    <span>${namaPaketText}</span>
+                    <span>${namaPaketText.split(" - ")[0]}</span> {/* Ambil hanya nama paket */}
                     <span>${formatRupiah(hargaPaket)}</span>
                 </div>
             `;
 
-      // Simpan nilai di input tersembunyi
-      namaPaketInputEl.value = namaPaketText;
-      totalBiayaInputEl.value = total;
-      idBkInputEl.value = idBk; // Set id_bk ke input tersembunyi
+      if (namaPaketInputEl) namaPaketInputEl.value = namaPaketText; // Kirim nama + deskripsi
+      if (totalBiayaInputEl) totalBiayaInputEl.value = total;
+      if (idBkInputEl) idBkInputEl.value = idBk;
     } else {
-      ringkasanHtml = '<p class="text-muted">Pilih paket untuk melihat rincian.</p>';
-      namaPaketInputEl.value = "";
-      totalBiayaInputEl.value = 0;
-      idBkInputEl.value = ""; // Kosongkan id_bk jika tidak ada paket terpilih
+      if (namaPaketInputEl) namaPaketInputEl.value = "";
+      if (totalBiayaInputEl) totalBiayaInputEl.value = 0;
+      if (idBkInputEl) idBkInputEl.value = "";
     }
 
-    // Tampilkan ke UI
-    ringkasanDetailEl.innerHTML = ringkasanHtml;
-    totalBiayaTextEl.innerText = formatRupiah(total);
+    if (ringkasanDetailEl) ringkasanDetailEl.innerHTML = ringkasanHtml;
+    if (totalBiayaTextEl) totalBiayaTextEl.innerText = formatRupiah(total);
   }
 
-  // Tambahkan event listener ke setiap input radio
-  const paketRadios = document.querySelectorAll(".paket-radio");
-  paketRadios.forEach((radio) => {
-    radio.addEventListener("change", updateTotal);
+  // Event listener untuk klik pada kartu paket
+  paketCards.forEach((card) => {
+    card.addEventListener("click", function () {
+      // Hapus kelas 'selected' dari semua kartu
+      paketCards.forEach((c) => c.classList.remove("selected"));
+      // Tambahkan kelas 'selected' ke kartu yang diklik
+      this.classList.add("selected");
+
+      // Tandai radio button di dalam kartu ini
+      const radioInside = this.querySelector(".paket-radio");
+      if (radioInside) {
+        radioInside.checked = true;
+        // Picu event change secara manual agar updateTotal terpanggil
+        const event = new Event("change", { bubbles: true });
+        radioInside.dispatchEvent(event);
+      }
+    });
   });
 
-  // Jalankan fungsi ini saat halaman pertama kali dimuat
-  updateTotal();
+  // Event listener untuk perubahan radio (jika dipilih dengan cara lain, misal keyboard)
+  paketRadios.forEach((radio) => {
+    radio.addEventListener("change", function () {
+      paketCards.forEach((card) => card.classList.remove("selected"));
+      if (this.checked) {
+        const parentCard = this.closest(".paket-card");
+        if (parentCard) {
+          parentCard.classList.add("selected");
+        }
+      }
+      updateTotal();
+    });
+    // Inisialisasi tampilan 'selected' saat halaman dimuat jika ada yang sudah terpilih
+    if (radio.checked) {
+      const parentCard = radio.closest(".paket-card");
+      if (parentCard) {
+        parentCard.classList.add("selected");
+      }
+    }
+  });
+
+  // Inisialisasi tanggal datang
+  if (tanggalDatangInput) {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0"); // Bulan dari 0-11
+    const dd = String(today.getDate()).padStart(2, "0");
+    tanggalDatangInput.setAttribute("min", `${yyyy}-${mm}-${dd}`);
+  }
+
+  updateTotal(); // Panggil saat load pertama kali
 });

@@ -77,90 +77,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Pengguna - MOVER</title>
+    <link rel="stylesheet" href="../css/login.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-    body {
-        background-color: #f8f9fa;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        margin: 0;
-        font-family: 'Poppins', sans-serif;
-        /* Menggunakan Poppins */
-    }
-
-    .login-container {
-        background-color: #fff;
-        padding: 2.5rem;
-        /* Sedikit lebih besar padding */
-        border-radius: 0.75rem;
-        /* Border radius lebih besar */
-        box-shadow: 0 0.8rem 1.5rem rgba(0, 0, 0, 0.1);
-        /* Shadow lebih halus */
-        width: 100%;
-        max-width: 420px;
-        /* Max width sedikit lebih besar */
-    }
-
-    .login-container h2 {
-        margin-bottom: 1rem;
-        text-align: center;
-        color: #367A83;
-        /* Warna dari common.css */
-        font-weight: 700;
-        /* Lebih tebal */
-        font-size: 2rem;
-        /* Lebih besar */
-    }
-
-    .login-container .subtitle {
-        text-align: center;
-        color: #6c757d;
-        margin-bottom: 2rem;
-        font-size: 0.95rem;
-    }
-
-    .form-floating label {
-        padding-left: 0.75rem;
-    }
-
-    .form-control:focus {
-        /* Gaya dari common.css */
-        border-color: #F5A623 !important;
-        box-shadow: 0 0 0 0.2rem rgba(245, 166, 35, 0.25) !important;
-    }
-
-    .btn-primary {
-        /* Tombol login utama */
-        background-color: #F5A623;
-        /* Warna aksen oranye */
-        border-color: #F5A623;
-        font-weight: 600;
-        padding: 0.75rem;
-        /* Padding tombol */
-        font-size: 1.05rem;
-    }
-
-    .btn-primary:hover {
-        background-color: #db8e1e;
-        /* Warna hover */
-        border-color: #db8e1e;
-    }
-
-    .text-center a {
-        color: #367A83;
-        /* Warna link */
-        text-decoration: none;
-    }
-
-    .text-center a:hover {
-        text-decoration: underline;
-    }
     </style>
 </head>
 
-<body>
+<body class="login-page-body">
     <div class="login-container">
         <h2>MOVER</h2>
         <p class="subtitle">Silakan login ke akun Anda</p>

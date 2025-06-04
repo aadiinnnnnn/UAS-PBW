@@ -19,243 +19,40 @@ if (isset($_SESSION['latestKostOrderDetails'])) { //
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MOVER - Pesanan Kost Berhasil</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="../css/common.css">
-    <link rel="stylesheet" href="../css/style.css">
-    <style>
-    body.order-success-page {
-        background-color: #f0f2f5;
-        /* */
-        display: flex;
-        /* */
-        flex-direction: column;
-        /* */
-        min-height: 100vh;
-        /* */
-    }
-
-    .order-success-header .navbar-brand,
-    .order-success-header .nav-link {
-        color: white !important;
-        /* */
-    }
-
-    .order-success-header .btn-logout-custom {
-        background-color: #FFD700;
-        /* */
-        color: #2f4f4f !important;
-        /* */
-        border: none;
-        /* */
-        padding: 8px 15px;
-        /* */
-        border-radius: 5px;
-        /* */
-        font-weight: 500;
-        /* */
-    }
-
-    .header-custom .profile-icon-link .profile-icon-sm {
-        /* */
-        display: flex;
-        /* */
-        align-items: center;
-        /* */
-        justify-content: center;
-        /* */
-        width: 35px;
-        /* */
-        height: 35px;
-        /* */
-        border-radius: 50%;
-        /* */
-        overflow: hidden;
-
-        border: 2px solid white;
-    }
-
-    .header-custom .profile-icon-link .profile-icon-sm img {
-        /* */
-        width: 100%;
-        /* */
-        height: 100%;
-        /* */
-        object-fit: cover;
-        /* */
-    }
-
-    .success-card-container {
-        flex-grow: 1;
-        /* */
-        display: flex;
-        /* */
-        align-items: center;
-        /* */
-        justify-content: center;
-        /* */
-        padding: 20px;
-        /* */
-        margin-top: 70px;
-        /* */
-        margin-bottom: 20px;
-        /* */
-    }
-
-    .success-card-standalone {
-        background-color: #fff;
-        /* */
-        color: #333;
-        /* */
-        border-radius: 15px;
-        /* */
-        padding: 35px 40px;
-        /* */
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        /* */
-        max-width: 650px;
-        /* */
-        width: 100%;
-        /* */
-        text-align: center;
-        /* */
-    }
-
-    .success-icon-standalone {
-        font-size: 4.5rem;
-        /* */
-        color: #28a745;
-        /* */
-        margin-bottom: 20px;
-        /* */
-        line-height: 1;
-        /* */
-    }
-
-    .success-title-standalone {
-        font-size: 2rem;
-        /* */
-        font-weight: 700;
-        /* */
-        color: #367A83;
-        /* */
-        margin-bottom: 15px;
-        /* */
-    }
-
-    .success-message-standalone {
-        font-size: 1.1rem;
-        /* */
-        color: #495057;
-        /* */
-        margin-bottom: 25px;
-        /* */
-    }
-
-    .order-details-summary-standalone {
-        text-align: left;
-        /* */
-        margin-top: 20px;
-        /* */
-        border-top: 1px solid #dee2e6;
-        /* */
-        padding-top: 20px;
-        /* */
-    }
-
-    .order-details-summary-standalone h6 {
-        font-size: 1.2rem;
-        /* */
-        color: #367A83;
-        /* */
-        margin-bottom: 15px;
-        /* */
-        font-weight: 600;
-        /* */
-    }
-
-    .order-details-summary-standalone p {
-        margin-bottom: 10px;
-        /* */
-        font-size: 1rem;
-        /* */
-        color: #333;
-        /* */
-    }
-
-    .order-details-summary-standalone p strong {
-        color: #495057;
-        /* */
-        min-width: 170px;
-        /* */
-        display: inline-block;
-        /* */
-        font-weight: 600;
-        /* */
-    }
-
-    .btn-back-home-standalone {
-        margin-top: 25px;
-        /* */
-        background-color: #F5A623;
-        /* */
-        color: white;
-        /* */
-        padding: 12px 30px;
-        /* */
-        font-size: 1.05rem;
-        /* */
-        border-radius: 8px;
-        /* */
-        text-decoration: none;
-        /* */
-        font-weight: 600;
-        /* */
-        border: none;
-        /* */
-        transition: background-color 0.2s ease;
-        /* */
-    }
-
-    .btn-back-home-standalone:hover {
-        background-color: #db8e1e;
-        /* */
-    }
-
-    .footer-custom {
-        margin-top: auto;
-        /* */
-    }
-    </style>
+    <link rel="stylesheet" href="../css/order.css">
 </head>
 
 <body class="order-success-page">
 
-    <header class="header-custom sticky-top order-success-header">
+    <header class="header-custom sticky-top">
         <nav class="container navbar navbar-expand-lg navbar-dark">
-            <a class="navbar-brand" href="indexuser.php">LOGO MOVER</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavSuccess"
-                aria-controls="navbarNavSuccess" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" class="" href="indexuser.php"><img src="../image/logo mover.png" alt=""
+                    style="height: 70px;"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNavSuccess">
-                <ul class="navbar-nav ml-auto align-items-center">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="indexuser.php">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pilihan.php" class="nav-link order-btn-nav">Layanan</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle profile-icon-link" href="#" id="navbarDropdownUser"
                             role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <div class="profile-icon-sm">
-                                <img src="../assets/img/default-profile.png" alt="User Profile" />
-                            </div>
-                            <?php echo htmlspecialchars($_SESSION['username']); ?>
+                            <img src="../assets/img/default-profile.png" class="profile-icon-sm" alt="User Profile" />
+                            <span class="username-display"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownUser">
+                            <a class="dropdown-item" href="profil.php">Profil</a>
                             <a class="dropdown-item" href="logout.php">Logout</a>
                         </div>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="indexuser.php">Beranda</a></li>
-                    <li class="nav-item"><a class="nav-link" href="pilihan_order.php">Order Lagi</a></li>
-                    <li class="nav-item">
-                        <a href="logout.php" class="nav-link btn btn-logout-custom">Logout</a>
                     </li>
                 </ul>
             </div>

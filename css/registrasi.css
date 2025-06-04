@@ -11,69 +11,6 @@ body {
   color: white;
   overflow-x: hidden;
 }
-
-/* ==== Navbar ==== */
-/* Kelas .navbar ini akan digunakan baik di landing page maupun register page */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 25px 50px; /* Padding standar untuk navbar */
-  background-color: transparent; /* Atau #418d99 jika ingin menyatu dengan body */
-  position: fixed; /* Membuat navbar tetap di atas */
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1030; /* Pastikan di atas konten lain */
-  /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: jika ingin ada shadow */
-}
-
-.logo {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: white; /* Sesuaikan jika logo MOVER Anda memiliki warna spesifik */
-}
-
-.nav-menu {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.nav-menu a {
-  text-decoration: none;
-  color: white;
-  font-size: 1rem;
-}
-
-.login-btn {
-  /* Tombol login di navbar */
-  background-color: white;
-  color: #418d99; /* Warna teks tombol login */
-  padding: 8px 20px;
-  font-weight: 500;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.order-btn {
-  /* Tombol order di navbar */
-  background-color: white;
-  color: #418d99; /* Warna teks tombol order */
-  padding: 8px 20px;
-  font-weight: 500;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.arrow {
-  margin-left: 6px;
-}
-
 /* ==== Gaya Spesifik untuk Halaman Registrasi ==== */
 /* Kita akan tetap mempertahankan beberapa gaya spesifik untuk kartu registrasi */
 body.register-page-body {

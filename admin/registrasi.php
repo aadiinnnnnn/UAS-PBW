@@ -115,7 +115,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MOVER - Daftar Akun Baru</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/registrasi.css"> {/* */}
+    <link rel="stylesheet" href="../css/registrasi.css">
+    <link rel="stylesheet" href="../css/common.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -124,10 +125,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body class="register-page-body">
-    <header class="navbar">
-        <div class="logo">MOVER</div>
-        <nav class="nav-menu"> <a href="#">About</a> <a href="#">Contact</a> <a href="../admin/index.php"> <button {/*
-                    */} class="order-btn">HOME <span class="arrow"></span></button> </a>
+    <header class="header-custom sticky-top">
+        <nav class="container navbar navbar-expand-lg navbar-dark">
+            <a class="navbar-brand" class="" href="indexuser.php"><img src="../image/logo mover.png" alt=""
+                    style="height: 70px;"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a href="index.php" class="nav-link order-btn-nav">Home</a>
+                    </li>
+            </div>
         </nav>
     </header>
     <div class="register-card">

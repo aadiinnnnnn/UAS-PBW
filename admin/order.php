@@ -138,8 +138,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
     exit; // Penting setelah merespons AJAX
 }
 
-// Bagian HTML dari order.php tetap sama seperti yang Anda miliki
-// ... (kode HTML untuk form pemesanan) ...
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -150,112 +148,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
     <title>MOVER - Buat Pesanan Pindahan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/common.css">
-    <link rel="stylesheet" href="../css/carikost.css">
-    <style>
-    /* Anda bisa menambahkan style spesifik untuk order.php di sini jika perlu */
-    /* Style dasar dari respons sebelumnya untuk kartu, dll. sudah ada di order_sukses.php */
-    /* Jika ingin konsisten, beberapa style global bisa ditaruh di indexuser.css */
-    .form-card,
-    .summary-card {
-        background-color: #ffffff;
-        color: #333;
-        border: none;
-        border-radius: 15px;
-        /* */
-        padding: 20px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .title-order {
-        color: white;
-        font-weight: bold;
-    }
-
-    .form-title,
-    .summary-title,
-    .payment-title {
-        color: #2f4f4f;
-        font-weight: 600;
-    }
-
-    .form-label {
-        color: #495057;
-        font-weight: 500;
-    }
-
-    .form-control {
-        border-radius: 8px;
-        /* */
-        border: 1px solid #ced4da;
-    }
-
-    .btn-success-custom {
-        /* Untuk tombol "Pesan Sekarang" */
-        background-color: #ffd700;
-        /* */
-        border-color: #ffd700;
-        /* */
-        color: #2f4f4f;
-        /* */
-        font-weight: 600;
-        /* */
-        padding: 10px 20px;
-    }
-
-    .btn-success-custom:hover {
-        background-color: #e0c200;
-        /* */
-        border-color: #e0c200;
-        /* */
-    }
-
-    /* Navbar styling (jika belum tercakup oleh indexuser.css atau butuh override) */
-    .navbar {
-        padding: 20px 40px;
-    }
-
-    /* */
-    .nav-menu .order-btn {
-        /* Tombol Beranda di navbar order.php */
-        background-color: white;
-        color: #418d99;
-        padding: 8px 20px;
-        font-weight: 500;
-        border: none;
-        border-radius: 8px;
-        /* */
-    }
-
-    .nav-menu .logout-btn {
-        background-color: #FFD700;
-        color: #2f4f4f;
-        padding: 8px 20px;
-        font-weight: 500;
-        border: none;
-        border-radius: 8px;
-        /* */
-    }
-
-    .profile-icon img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    /* */
-    </style>
+    <link rel="stylesheet" href="../css/order.css">
 </head>
 
-<body style="background-color: #418d99; color:white; padding-top: 90px;">
+<body style="background-color: #418d99; color:white;">
     <header class="header-custom sticky-top">
         <nav class="container navbar navbar-expand-lg navbar-dark">
-            <a class="navbar-brand" href="indexuser.php">LOGO MOVER</a>
+            <a class="navbar-brand" class="" href="indexuser.php"><img src="../image/logo mover.png" alt=""
+                    style="height: 70px;"></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto align-items-center">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
                         <a class="nav-link" href="indexuser.php">Beranda</a>
                     </li>

@@ -4,32 +4,6 @@
 body {
   background-color: #f8f9fa; /* Latar belakang netral agar konten utama menonjol */
 }
-
-/* === Penyesuaian Header/Navbar agar konsisten dengan dasbor pengguna === */
-/* Gaya ini diasumsikan sebagian besar sudah ada di common.css, 
-   namun ditambahkan di sini untuk kelengkapan dan penyesuaian. */
-.header-custom .profile-icon-sm {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  margin-right: 8px;
-  border: 1px solid white;
-}
-.header-custom .order-btn-nav {
-  background-color: #ffd700; /* Warna aksen kuning dari halaman order */
-  color: #2f4f4f !important;
-  padding: 8px 15px !important;
-  border-radius: 8px;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-}
-.header-custom .order-btn-nav:hover {
-  background-color: #e0c200;
-}
-.navbar-nav .dropdown-toggle::after {
-  margin-left: 0.5em;
-}
-
 /* === HERO SECTION & SEARCH BAR (Cari Kost) === */
 .hero-section-search {
   background: linear-gradient(to right, #367a83, #418d99); /* Menggunakan warna utama aplikasi */

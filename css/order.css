@@ -102,25 +102,3 @@
   background-color: #e0c200;
   border-color: #e0c200;
 }
-
-.logout-btn {
-  /* Pastikan ada style untuk logout jika belum */
-  background-color: #dc3545;
-  color: white;
-  padding: 8px 20px;
-  font-weight: 500;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.logout-btn:hover {
-  background-color: #c82333;
-}
-
-.navbar .profile-icon img {
-  /* Pastikan path gambar profile valid */
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}

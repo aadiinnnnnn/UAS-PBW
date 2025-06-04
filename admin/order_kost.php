@@ -42,10 +42,9 @@ if ($error_message && !$kost_details) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesan Kost - MOVER</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="../css/common.css"> {/* Pastikan common.css ada dan sesuai */}
-    <link rel="stylesheet" href="../css/owner.css"> {/* Mungkin tidak semua gaya owner.css relevan */}
+    <link rel="stylesheet" href="../css/common.css">
 
     <style>
     .kost-summary-card {
@@ -158,6 +157,148 @@ if ($error_message && !$kost_details) {
         cursor: pointer;
         line-height: 1;
     }
+
+    /* Penyesuaian untuk order_kost.php agar lebih menarik */
+
+    /* Judul Utama Halaman */
+    .owner-page-main-title {
+        color: #367A83;
+        /* Warna utama MOVER */
+        font-weight: 700;
+        /* Lebih tebal */
+        margin-bottom: 2.5rem;
+        /* Jarak bawah lebih besar */
+    }
+
+    /* Kartu Ringkasan Sisi Kiri */
+    .kost-summary-card {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        /* Border lebih halus */
+        padding: 25px;
+        /* Padding lebih besar */
+        border-radius: 12px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        /* Bayangan halus */
+    }
+
+    .kost-summary-card h5 {
+        color: #367A83;
+        font-weight: 600;
+        margin-bottom: 18px;
+        /* Jarak lebih */
+        padding-bottom: 10px;
+        border-bottom: 1px solid #dee2e6;
+        /* Garis bawah halus */
+    }
+
+    .kost-summary-card p {
+        margin-bottom: 0.8rem;
+        font-size: 0.95rem;
+        color: #495057;
+    }
+
+    .kost-summary-card p strong {
+        /* Untuk label seperti "Nama Kost:" */
+        color: #343a40;
+        font-weight: 600;
+    }
+
+    /* Khusus untuk Harga */
+    .price-summary #pricePerDurationDisplay,
+    .price-summary #totalPriceDisplay {
+        font-weight: 700;
+        /* Lebih tebal */
+    }
+
+    .price-summary #totalPriceDisplay {
+        font-size: 1.5em;
+        /* Lebih besar */
+        color: #F5A623;
+        /* Warna aksen oranye */
+    }
+
+    .price-summary hr {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Kartu Form Utama (Sisi Kanan) */
+    .form-section-card {
+        /* Gaya ini mungkin sudah ada di owner.css/pemilik.css */
+        background-color: #ffffff;
+        padding: 25px 30px;
+        /* Padding disesuaikan */
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 25px;
+    }
+
+    .form-section-card .section-title {
+        /* Judul seksi dalam form */
+        font-size: 1.3rem;
+        /* Sedikit lebih besar */
+        color: #367A83;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #F5A623;
+        /* Aksen oranye */
+        display: inline-block;
+        /* Agar border hanya selebar teks */
+    }
+
+    .form-section-card .section-title i {
+        margin-right: 10px;
+        /* Jarak ikon */
+    }
+
+    /* Input fields dan Select */
+    .form-control,
+    .custom-select {
+        border-radius: 8px !important;
+        border: 1px solid #ced4da;
+        padding: 0.5rem 1rem;
+        /* Padding lebih nyaman */
+        height: auto;
+        /* Biarkan tinggi menyesuaikan padding */
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+
+    .form-control:focus,
+    .custom-select:focus {
+        border-color: #F5A623 !important;
+        box-shadow: 0 0 0 0.2rem rgba(245, 166, 35, 0.25) !important;
+    }
+
+    /* Tombol Submit Utama */
+    .btn-submit-kost {
+        /* Gaya dari order_kost.php sudah cukup baik */
+        padding: 12px 275px;
+        /* Sedikit lebih besar */
+        font-size: 1.1rem;
+        /* Font lebih besar */
+    }
+
+    /* Pilihan Metode Pembayaran (Radio) */
+    .custom-control-label {
+        cursor: pointer;
+        font-weight: 500;
+        /* Teks sedikit lebih tebal */
+    }
+
+    /* Persetujuan Syarat & Ketentuan */
+    #termsAgreement+.custom-control-label::before {
+        /* Custom checkbox box */
+        border-radius: 4px;
+    }
+
+    #termsAgreement:checked~.custom-control-label::before {
+        /* Custom checkbox saat checked */
+        background-color: #F5A623;
+        border-color: #F5A623;
+    }
     </style>
 </head>
 
@@ -165,24 +306,27 @@ if ($error_message && !$kost_details) {
 
     <header class="header-custom sticky-top">
         <nav class="container navbar navbar-expand-lg navbar-dark">
-            <a class="navbar-brand" href="indexuser.php">LOGO MOVER</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavOrder"
-                aria-controls="navbarNavOrder" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" class="" href="indexuser.php"><img src="../image/logo mover.png" alt=""
+                    style="height: 70px;"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNavOrder">
-                <ul class="navbar-nav ml-auto align-items-center">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="carikost.php">Cari Kost Lain</a>
+                        <a class="nav-link" href="indexuser.php">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pilihan.php" class="nav-link order-btn-nav">Layanan</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="../assets/img/default-profile.png" class="profile-icon-sm" alt="Profil"
-                                style="width: 25px; height: 25px; border-radius: 50%; margin-right: 5px;">
-                            <?php echo htmlspecialchars($_SESSION['username']); ?>
+                        <a class="nav-link dropdown-toggle profile-icon-link" href="#" id="navbarDropdownUser"
+                            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="username-display"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownUser">
+                            <a class="dropdown-item" href="profil.php">Profil</a>
                             <a class="dropdown-item" href="logout.php">Logout</a>
                         </div>
                     </li>
