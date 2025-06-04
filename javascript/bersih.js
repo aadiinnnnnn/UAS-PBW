@@ -1,9 +1,29 @@
-// Di dalam file bersih.js
-document.addEventListener("DOMContentLoaded", function () {
-  // ... (kode formatRupiah Anda) ...
+// Di dalam file ../javascript/bersih.js
 
+function formatRupiah(angka, prefix = "Rp ") {
+  if (angka === null || angka === undefined || isNaN(parseFloat(angka))) {
+    return prefix + "0"; // Mengembalikan Rp 0 untuk input yang tidak valid
+  }
+  let number_string = parseFloat(angka)
+      .toString()
+      .replace(/[^,\d]/g, ""),
+    split = number_string.split(","),
+    sisa = split[0].length % 3,
+    rupiah = split[0].substr(0, sisa),
+    ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+  if (ribuan) {
+    let separator = sisa ? "." : "";
+    rupiah += separator + ribuan.join(".");
+  }
+
+  rupiah = split[1] !== undefined ? rupiah + "," + split[1] : rupiah;
+  return prefix + rupiah;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
   const paketRadios = document.querySelectorAll(".paket-radio");
-  const paketCards = document.querySelectorAll(".paket-card"); // Ambil semua kartu paket
+  const paketCards = document.querySelectorAll(".paket-card");
   const ringkasanDetailEl = document.getElementById("ringkasanDetail");
   const totalBiayaTextEl = document.getElementById("totalBiayaText");
   const totalBiayaInputEl = document.getElementById("total_biaya_input");
@@ -28,12 +48,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
       ringkasanHtml = `
                 <div class="d-flex justify-content-between">
-                    <span>${namaPaketText.split(" - ")[0]}</span> {/* Ambil hanya nama paket */}
+                    <span>${namaPaketText.split(" - ")[0]}</span>
                     <span>${formatRupiah(hargaPaket)}</span>
                 </div>
             `;
 
-      if (namaPaketInputEl) namaPaketInputEl.value = namaPaketText; // Kirim nama + deskripsi
+      if (namaPaketInputEl) namaPaketInputEl.value = namaPaketText;
       if (totalBiayaInputEl) totalBiayaInputEl.value = total;
       if (idBkInputEl) idBkInputEl.value = idBk;
     } else {
@@ -46,26 +66,20 @@ document.addEventListener("DOMContentLoaded", function () {
     if (totalBiayaTextEl) totalBiayaTextEl.innerText = formatRupiah(total);
   }
 
-  // Event listener untuk klik pada kartu paket
   paketCards.forEach((card) => {
     card.addEventListener("click", function () {
-      // Hapus kelas 'selected' dari semua kartu
       paketCards.forEach((c) => c.classList.remove("selected"));
-      // Tambahkan kelas 'selected' ke kartu yang diklik
       this.classList.add("selected");
 
-      // Tandai radio button di dalam kartu ini
       const radioInside = this.querySelector(".paket-radio");
       if (radioInside) {
         radioInside.checked = true;
-        // Picu event change secara manual agar updateTotal terpanggil
         const event = new Event("change", { bubbles: true });
         radioInside.dispatchEvent(event);
       }
     });
   });
 
-  // Event listener untuk perubahan radio (jika dipilih dengan cara lain, misal keyboard)
   paketRadios.forEach((radio) => {
     radio.addEventListener("change", function () {
       paketCards.forEach((card) => card.classList.remove("selected"));
@@ -77,7 +91,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       updateTotal();
     });
-    // Inisialisasi tampilan 'selected' saat halaman dimuat jika ada yang sudah terpilih
     if (radio.checked) {
       const parentCard = radio.closest(".paket-card");
       if (parentCard) {
@@ -86,14 +99,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Inisialisasi tanggal datang
   if (tanggalDatangInput) {
     const today = new Date();
     const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, "0"); // Bulan dari 0-11
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
     const dd = String(today.getDate()).padStart(2, "0");
     tanggalDatangInput.setAttribute("min", `${yyyy}-${mm}-${dd}`);
   }
 
-  updateTotal(); // Panggil saat load pertama kali
+  updateTotal();
 });

@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // *** PERHATIKAN: Tidak ada 'i' untuk id_order_bk di sini ***
                         $stmt_insert->bind_param("sssssds", $id_bk, $id_user, $jenis_paket_bk, $tanggal_order_bk, $tanggal_datang_bk, $total_harga_bk, $metode_pembayaran_bk);
 
-                        if ($stmt_insert->execute()) { // Baris ini adalah baris 61
+                        if ($stmt_insert->execute()) {
                             // Simpan detail pesanan ke session untuk halaman sukses
                             $_SESSION['latestBersihOrderDetails'] = [
                                 'orderId' => $stmt_insert->insert_id, // Gunakan ID yang di-generate otomatis oleh DB

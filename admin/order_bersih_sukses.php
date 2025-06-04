@@ -141,7 +141,6 @@ if (isset($_SESSION['latestBersihOrderDetails'])) {
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle profile-icon-link" href="#" id="navbarDropdownUser"
                             role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="../assets/img/default-profile.png" class="profile-icon-sm" alt="User Profile" />
                             <span class="username-display"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownUser">
@@ -175,7 +174,7 @@ if (isset($_SESSION['latestBersihOrderDetails'])) {
                 Harap simpan detail pesanan Anda. Jika ada pertanyaan, jangan ragu untuk menghubungi layanan pelanggan
                 kami.
             </p>
-            <a href="bersih.php" class="btn btn-back-home-standalone">Pesan Jasa Bersih Lain</a>
+            <a href="bersih.php" class="btn btn-primary mt-3 ml-2">Pesan Jasa Bersih Lain</a>
             <a href="indexuser.php" class="btn btn-secondary mt-3 ml-2">Kembali ke Dashboard</a>
             <a href="review_form.php?order_id=<?php echo htmlspecialchars($orderDetailsFromSession['orderId'] ?? 'N/A'); ?>&order_type=bersih"
                 class="btn btn-info mt-3 ml-2">Berikan Ulasan</a>
