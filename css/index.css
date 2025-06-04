@@ -10,58 +10,6 @@ body {
   color: white;
   overflow-x: hidden;
 }
-
-/* ==== Navbar ==== */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 25px 50px;
-}
-
-.logo {
-  font-size: 1.4rem;
-  font-weight: 600;
-}
-
-.nav-menu {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.nav-menu a {
-  text-decoration: none;
-  color: white;
-  font-size: 1rem;
-}
-
-.login-btn {
-  background-color: white;
-  color: #418d99;
-  padding: 8px 20px;
-  font-weight: 500;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.order-btn {
-  background-color: white;
-  color: #418d99;
-  padding: 8px 20px;
-  font-weight: 500;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.arrow {
-  margin-left: 6px;
-}
-
 /* ==== Hero Section ==== */
 .hero {
   display: flex;

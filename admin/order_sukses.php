@@ -16,10 +16,9 @@ if (isset($_SESSION['order_details'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MOVER - Pesanan Pindahan Berhasil</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="../css/common.css">
-    <link rel="stylesheet" href="../css/order.css"> {/* Assuming order.css has relevant success page styles */}
     <style>
     /* Gaya khusus untuk halaman sukses ini */
     body.order-success-page {
@@ -122,29 +121,29 @@ if (isset($_SESSION['order_details'])) {
 </head>
 
 <body class="order-success-page">
-
     <header class="header-custom sticky-top">
         <nav class="container navbar navbar-expand-lg navbar-dark">
-            <a class="navbar-brand" href="indexuser.php">LOGO MOVER</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavSuccess"
-                aria-controls="navbarNavSuccess" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" class="" href="indexuser.php"><img src="../image/logo mover.png" alt=""
+                    style="height: 70px;"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNavSuccess">
-                <ul class="navbar-nav ml-auto align-items-center">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
                         <a class="nav-link" href="indexuser.php">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="pilihan.php">Order Layanan Lain</a>
+                        <a href="pilihan.php" class="nav-link order-btn-nav">Layanan</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="../assets/img/default-profile.png" class="profile-icon-sm" alt="User Profile" />
-                            <?php echo htmlspecialchars($_SESSION['username']); ?>
+                        <a class="nav-link dropdown-toggle profile-icon-link" href="#" id="navbarDropdownUser"
+                            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="username-display"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownUser">
+                            <a class="dropdown-item" href="profil.php">Profil</a>
                             <a class="dropdown-item" href="logout.php">Logout</a>
                         </div>
                     </li>
@@ -177,7 +176,7 @@ if (isset($_SESSION['order_details'])) {
                 Harap simpan detail pesanan Anda. Jika ada pertanyaan, jangan ragu untuk menghubungi layanan pelanggan
                 kami.
             </p>
-            <a href="order.php" class="btn btn-back-home-standalone">Pesan Pindahan Lain</a>
+            <a href="order.php" class="btn btn-primary  mt-3 ml-2">Pesan Pindahan Lain</a>
             <a href="indexuser.php" class="btn btn-secondary mt-3 ml-2">Kembali ke Dashboard</a>
             <a href="review_form.php?order_id=<?php echo htmlspecialchars($orderDetailsFromSession['orderId'] ?? 'N/A'); ?>&order_type=pindahan"
                 class="btn btn-info mt-3 ml-2">Berikan Ulasan</a>

@@ -12,97 +12,6 @@ body {
   line-height: 1.6;
 }
 
-/* Navbar Styles (Konsisten dengan seluruh aplikasi) */
-.navbar {
-  background-color: #418d99;
-  padding: 15px 50px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.navbar .logo {
-  font-size: 1.8em;
-  font-weight: bold;
-}
-
-.nav-menu {
-  display: flex;
-  align-items: center;
-  gap: 25px;
-}
-
-.nav-menu a {
-  color: white;
-  text-decoration: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
-}
-
-.nav-menu a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Profile Dropdown untuk Pengguna Login */
-.profile-dropdown {
-  position: relative;
-  display: inline-block;
-}
-.profile-btn {
-  background-color: transparent;
-  border: none;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 15px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-.profile-btn img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid white;
-}
-.profile-btn .fa-caret-down {
-  transition: transform 0.2s ease-in-out;
-}
-.profile-dropdown:hover .fa-caret-down {
-  transform: rotate(180deg);
-}
-.profile-dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: white;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  border-radius: 8px;
-  right: 0;
-  margin-top: 5px;
-  overflow: hidden;
-}
-.profile-dropdown-content a {
-  color: #333;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  margin-left: 0;
-  border-radius: 0;
-}
-.profile-dropdown-content a:hover {
-  background-color: #f1f1f1;
-}
-.profile-dropdown:hover .profile-dropdown-content {
-  display: block;
-}
-
 /* Main Content Styles */
 .container {
   max-width: 1200px;
@@ -207,28 +116,5 @@ body {
   .option-card {
     width: calc(50% - 30px);
     margin-bottom: 30px;
-  }
-}
-
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    padding: 15px 20px;
-  }
-  .navbar .logo {
-    margin-bottom: 15px;
-  }
-  .nav-menu {
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
-    gap: 10px;
-  }
-  .container h1 {
-    font-size: 2.2em;
-  }
-  .option-card {
-    width: 90%;
-    max-width: 320px;
   }
 }

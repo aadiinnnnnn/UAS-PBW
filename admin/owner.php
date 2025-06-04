@@ -76,7 +76,7 @@ if (!$resultProperti) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dasbor Pemilik - MOVER</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/owner.css">
@@ -87,13 +87,14 @@ if (!$resultProperti) {
 
     <header class="header-custom sticky-top">
         <nav class="container navbar navbar-expand-lg navbar-dark">
-            <a class="navbar-brand" href="owner.php">LOGO MOVER</a>
+            <a class="navbar-brand" class="" href="indexuser.php"><img src="../image/logo mover.png" alt=""
+                    style="height: 70px;"></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavOwnerDashboard"
                 aria-controls="navbarNavOwnerDashboard" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavOwnerDashboard">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="#db-ringkasan">Ringkasan</a>
                     </li>
@@ -177,7 +178,7 @@ if (!$resultProperti) {
 
                              // Optional: Further check if the physical file exists
                              // This assumes 'uploads' directory is directly in the project root (e.g., C:\xampp\htdocs\UAS\uploads\)
-                             if (!file_exists(dirname(dirname(__FILE__)) . 'C:\xampp\htdocs\UAS\image\budi dejek.jpeg' . $path_gambar_utama_db)) {
+                             if (!file_exists(dirname(dirname(__FILE__)) . 'C:\xampp\htdocs\UAS\image\budi dejek.jpeg   ' . $path_gambar_utama_db)) {
                                  $url_gambar_utama = "https://via.placeholder.com/400x300.png?text=File+Not+Found"; // Placeholder if file does not exist
                              }
                          } else {

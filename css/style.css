@@ -1,253 +1,286 @@
-/* Global Reset & Font */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+/* GLOBAL STYLES & VARIABLES */
+:root {
+  --primary-bg-color: #36827f; /* Teal-ish from image */
+  --secondary-color: #ff9933; /* Orange from truck */
+  --text-color: #333;
+  --white-text: #ffffff;
+  --light-grey: #f4f7f6;
+  --dark-grey: #555;
+  --button-hover: #2a6865;
+  --border-color: #ddd;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --border-radius: 8px;
 }
 
 body {
-  background-color: #f0f2f5; /* Warna latar belakang netral */
-  color: #333;
-  line-height: 1.6;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--light-grey);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Pushes footer to bottom */
+  box-sizing: border-box; /* Include padding and border in element's total width/height */
 }
 
-/* Navbar Styles */
+/* HEADER / NAVBAR STYLING */
 .navbar {
-  background-color: #418d99; /* Warna teal/biru dari gambar, Anda bisa sesuaikan dengan #5C95A3 jika itu yang paling baru*/
+  background-color: var(--primary-bg-color);
   padding: 15px 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Ensure navbar is above other content */
+  position: relative; /* For dropdown positioning */
 }
 
 .navbar .logo {
-  font-size: 1.8em;
-  font-weight: bold;
+  color: var(--white-text);
+  font-size: 28px;
+  font-weight: 700;
+  text-decoration: none;
 }
 
-.nav-menu {
+.navbar .nav-links {
   display: flex;
   align-items: center;
+  gap: 30px; /* Consistent spacing between main nav links */
 }
 
-/* Style ini akan berlaku untuk link Beranda, About, dan Contact */
-.nav-menu a {
-  color: white;
+.navbar .nav-links a {
+  color: var(--white-text);
   text-decoration: none;
-  margin-left: 20px;
-  padding: 8px 15px;
-  border-radius: 5px;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
+  font-weight: 600;
+  font-size: 1.05em;
+  padding-bottom: 5px; /* Space for bottom border highlight */
+  transition: color 0.3s ease, border-bottom 0.3s ease;
 }
 
-.nav-menu a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.navbar .nav-links a:hover {
+  color: var(--secondary-color);
+  border-bottom: 2px solid var(--secondary-color);
 }
 
-/* Ini untuk tombol login jika ada, jika tidak ada bisa diabaikan */
-.nav-menu .login-btn {
-  background-color: white;
-  color: #418d99;
-  font-weight: bold;
-}
-.nav-menu .login-btn:hover {
-  background-color: #e6e6e6;
+/* Active link styling */
+.navbar .nav-links a.active,
+.navbar .nav-links .dropdown > a.active {
+  /* Applies to parent dropdown link */
+  color: var(--secondary-color);
+  border-bottom: 2px solid var(--secondary-color);
 }
 
-/* Dropdown for Order Button */
-.dropdown {
+/* Dropdown specific styling */
+.navbar .nav-links .dropdown {
   position: relative;
   display: inline-block;
-  margin-left: 20px; /* Menyamakan margin dengan item nav-menu a lainnya */
 }
 
-.order-btn {
-  /* Style untuk tombol di dalam dropdown trigger */
-  color: white;
-  text-decoration: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
-  background-color: transparent; /* Pastikan sama dengan nav-menu a */
-  border: none;
-  cursor: pointer;
-  font-size: 1em; /* Sesuaikan dengan ukuran font nav-menu a */
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Samakan font */
-}
-
-.order-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* Sama dengan hover nav-menu a */
-}
-
-.arrow {
-  font-size: 0.7em;
-  margin-left: 5px;
-}
-
-.dropdown-content {
+.navbar .nav-links .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #418d99; /* Warna sama dengan navbar */
-  min-width: 160px;
+  background-color: #f9f9f9;
+  min-width: 180px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  border-radius: 5px;
-  margin-top: 5px; /* Space between button and dropdown */
-  right: 0; /* Agar dropdown muncul di kanan jika navbar diatur demikian */
+  z-index: 1001; /* Higher z-index than navbar */
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  top: calc(100% + 5px); /* Position slightly below parent link */
+  left: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
 }
 
-.dropdown-content a {
-  color: white;
+.navbar .nav-links .dropdown:hover .dropdown-content {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.navbar .nav-links .dropdown-content a {
+  color: var(--text-color);
   padding: 12px 16px;
   text-decoration: none;
   display: block;
-  margin-left: 0;
-  border-radius: 0;
+  margin-left: 0; /* Override parent margin-left */
+  font-size: 1em;
+  border-bottom: none; /* Remove active border from parent */
 }
 
-.dropdown-content a:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+.navbar .nav-links .dropdown-content a:hover {
+  background-color: #f1f1f1;
+  color: var(--primary-bg-color);
 }
 
-.dropdown:hover .dropdown-content {
+/* Active dropdown item styling */
+.navbar .nav-links .dropdown-content a.active {
+  background-color: #e0e0e0;
+  color: var(--primary-bg-color);
+  font-weight: 600;
+}
+
+/* MAIN CONTENT LAYOUT */
+.main-content {
+  flex-grow: 1; /* Allows main content to take available space */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align content to top */
+  padding: 40px 20px;
+}
+
+/* CONTENT CONTAINERS (e.g., for forms, messages) */
+.content-container {
+  /* General class for content blocks */
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 650px; /* Optimal reading width */
+  padding: 35px 40px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 5px 20px var(--shadow-color);
+  text-align: center;
+  box-sizing: border-box; /* Ensure padding doesn't increase width */
+}
+
+/* FORM GROUPING */
+.form-group {
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+label {
   display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 1.1em;
 }
 
-/* Main Content Styles */
-.container {
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 20px;
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  width: 100%; /* Full width within parent */
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  line-height: 1.6;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--primary-bg-color);
+  box-shadow: 0 0 0 3px rgba(54, 130, 127, 0.2);
+  outline: none;
+}
+
+/* RATING STARS */
+.rating-stars {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.rating-stars input[type="radio"] {
+  display: none;
+}
+
+.rating-stars label {
+  cursor: pointer;
+  font-size: 45px;
+  color: #ccc;
+  transition: color 0.2s ease-in-out;
+  margin-bottom: 0;
+  line-height: 1;
+}
+
+.rating-stars input[type="radio"]:checked ~ label,
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+  color: gold;
+}
+
+.rating-stars input[type="radio"]:checked + label {
+  color: gold;
+}
+
+/* BUTTONS */
+button,
+.button-link {
+  /* General button style */
+  background-color: var(--primary-bg-color);
+  color: var(--white-text);
+  padding: 14px 25px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  width: 100%;
+  font-size: 19px;
+  font-weight: 600;
+  text-decoration: none; /* For button-link */
+  display: inline-block; /* For button-link */
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  margin-top: 20px;
+}
+
+button:hover,
+.button-link:hover {
+  background-color: var(--button-hover);
+  transform: translateY(-2px);
+}
+
+button:active,
+.button-link:active {
+  transform: translateY(0);
+}
+
+/* MESSAGE BOXES */
+.message-box {
+  padding: 15px;
+  border-radius: var(--border-radius);
+  margin-top: 20px;
+  font-size: 1.05em;
+  font-weight: 600;
   text-align: center;
 }
 
-.container h1 {
-  color: #3a6a7e;
-  font-size: 2.5em;
-  margin-bottom: 40px;
-  font-weight: 600;
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
 }
 
-.options-container {
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 30px;
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
 }
 
-.option-card {
-  background-color: white;
-  width: 300px;
-  min-height: 280px;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  text-decoration: none;
-  color: #333;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* FOOTER */
+.footer {
+  background-color: var(--primary-bg-color);
+  color: var(--white-text);
+  text-align: center;
+  padding: 20px;
+  font-size: 0.9em;
 }
 
-.option-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-
-.option-icon {
+/* Confirmation Page (submit_review.php) specific styles */
+.confirmation-container h2 {
+  font-size: 36px;
+  color: #28a745; /* Success green */
   margin-bottom: 20px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.option-icon img {
-  max-width: 100px;
-  max-height: 100px;
-}
-
-.option-card h2 {
-  font-size: 1.6em;
-  font-weight: 600;
-  margin-top: 10px;
-}
-
-/* Warna spesifik untuk setiap card seperti pada gambar */
-.option-card.pindahan {
-  background-color: #fadbd8;
-}
-.option-card.pindahan h2 {
-  color: #c0392b;
-}
-
-.option-card.bersih {
-  background-color: #fef9e7;
-}
-.option-card.bersih h2 {
-  color: #b7950b;
-}
-
-.option-card.carikost {
-  background-color: #d6eaf8;
-}
-.option-card.carikost h2 {
-  color: #2e86c1;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .options-container {
-    justify-content: center;
-  }
-  .option-card {
-    width: calc(50% - 30px);
-    margin-bottom: 30px;
-  }
-}
-
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    padding: 15px 20px;
-  }
-  .navbar .logo {
-    margin-bottom: 10px;
-  }
-  .nav-menu {
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
-  }
-  .nav-menu a,
-  .nav-menu .dropdown {
-    margin-left: 0;
-    margin-bottom: 10px;
-    width: 100%;
-    text-align: center;
-  }
-  .nav-menu .dropdown {
-    width: auto; /* Agar dropdown tidak full width jika tidak diinginkan */
-  }
-  .dropdown-content {
-    position: static;
-    box-shadow: none;
-    background-color: rgba(255, 255, 255, 0.1);
-    text-align: center; /* Menengahkan item dropdown di mobile */
-  }
-
-  .container h1 {
-    font-size: 2em;
-  }
-  .option-card {
-    width: 80%;
-    max-width: 320px;
-  }
+  font-weight: 700;
 }

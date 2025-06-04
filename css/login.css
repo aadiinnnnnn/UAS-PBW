@@ -1,0 +1,118 @@
+/* Style untuk body halaman login */
+.login-page-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f0f2f5; /* Warna latar belakang yang lembut */
+  padding: 20px; /* Beri padding agar container tidak menempel di tepi layar kecil */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Contoh font yang lebih modern */
+}
+
+/* Style untuk kontainer login utama */
+.login-container {
+  background-color: #ffffff;
+  padding: 35px 40px; /* Padding di dalam kontainer (atas-bawah kiri-kanan) */
+  border-radius: 10px; /* Sudut yang membulat */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Bayangan halus */
+  width: 100%; /* Lebar kontainer */
+  max-width: 450px; /* Lebar maksimum kontainer */
+  text-align: center; /* Pusatkan teks dan elemen inline di dalamnya */
+}
+
+/* Style untuk logo */
+.login-logo {
+  display: block; /* Agar margin auto bekerja */
+  margin-left: auto;
+  margin-right: auto;
+  height: 70px; /* Sesuaikan tinggi logo jika perlu */
+  margin-bottom: 20px; /* Jarak bawah dari logo */
+}
+
+/* Style untuk subjudul */
+.login-container .subtitle {
+  font-size: 1.1rem;
+  color: #6c757d; /* Warna abu-abu (muted) dari Bootstrap */
+  margin-bottom: 30px; /* Jarak bawah dari subjudul */
+}
+
+/* Style untuk form input */
+.login-container .form-control {
+  border-radius: 6px; /* Sedikit membulatkan input field */
+  padding: 12px 15px; /* Padding di dalam input field */
+}
+
+.login-container .form-floating label {
+  padding: 1rem 0.95rem; /* Sesuaikan padding label jika perlu */
+  font-size: 0.95rem;
+}
+
+/* Style untuk tombol login kustom */
+.login-container .btn-login-custom {
+  padding: 12px 20px; /* Padding tombol agar lebih besar */
+  font-size: 1.05rem; /* Ukuran font tombol */
+  border-radius: 6px; /* Sudut membulat untuk tombol */
+  margin-top: 15px; /* Jarak atas tombol */
+  font-weight: 500;
+}
+
+/* Penyesuaian spasi untuk link "Daftar" dan "Kembali" */
+.login-container .mt-3 {
+  /* "Belum punya akun?" */
+  margin-top: 1.75rem !important; /* Tambah jarak atas, !important jika perlu override Bootstrap */
+}
+
+.login-container .mt-2 {
+  /* "Kembali ke Halaman Utama" */
+  margin-top: 1rem !important;
+}
+
+.login-container a {
+  color: #0d6efd; /* Warna link standar Bootstrap */
+  text-decoration: none;
+}
+
+.login-container a:hover {
+  text-decoration: underline;
+}
+
+/* Responsif untuk layar kecil jika diperlukan */
+@media (max-width: 576px) {
+  .login-container {
+    padding: 25px 20px; /* Kurangi padding pada layar kecil */
+    margin-top: 20px; /* Beri sedikit margin atas pada layar kecil */
+    margin-bottom: 20px;
+  }
+
+  .login-logo {
+    height: 60px; /* Kecilkan logo sedikit */
+    margin-bottom: 15px;
+  }
+
+  .login-container .subtitle {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+}
+
+.login-page-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Ini untuk tengah secara horizontal */
+  justify-content: center; /* Ini untuk tengah secara vertikal */
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  padding: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-container {
+  background-color: #ffffff;
+  padding: 35px 40px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px; /* Ini membatasi lebar form */
+  text-align: center;
+}

@@ -15,7 +15,8 @@ session_start();
 
 <body>
     <header class="navbar">
-        <div class="logo">LOGO</div>
+        <a class="navbar-brand" class="" href="indexuser.php"><img src="../image/logo mover.png" alt=""
+                style="height: 70px;"></a>
         <nav class="nav-menu">
             <a href="login.php">
                 <button class="login-btn">Login</button>

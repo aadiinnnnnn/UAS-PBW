@@ -34,7 +34,8 @@ if ($status == 'success') { //
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../css/rating.css" />
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     <style>
@@ -74,13 +75,34 @@ if ($status == 'success') { //
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    <header class="navbar">
-        <a href="indexuser.php" class="logo">LOGO MOVER</a>
-        <nav class="nav-links">
-            <a href="indexuser.php">Beranda</a>
-            <a href="#">Tentang</a>
-            <a href="#">Kontak</a>
-            <a href="logout.php">Logout</a>
+    <header class="header-custom sticky-top">
+        <nav class="container navbar navbar-expand-lg navbar-dark">
+            <a class="navbar-brand" class="" href="indexuser.php"><img src="../image/logo mover.png" alt=""
+                    style="height: 70px;"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="indexuser.php">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pilihan.php" class="nav-link order-btn-nav">Layanan</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle profile-icon-link" href="#" id="navbarDropdownUser"
+                            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="username-display"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownUser">
+                            <a class="dropdown-item" href="profil.php">Profil</a>
+                            <a class="dropdown-item" href="logout.php">Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </nav>
     </header>
 

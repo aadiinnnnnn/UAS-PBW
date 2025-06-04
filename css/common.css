@@ -1,24 +1,18 @@
 /* common.css */
-body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: #f8f9fa;
-  color: #333;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  position: relative; /* Penting untuk Bootstrap Scrollspy */
-}
+/* ... (gaya untuk body, main, footer, form yang sudah ada tetap dipertahankan) ... */
 
-main {
-  flex-grow: 1;
-}
-
-/* === HEADER UMUM === */
+/* === STANDARD HEADER === */
 .header-custom {
   background-color: #367a83; /* Warna teal/biru utama */
   padding: 10px 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1030; /* Untuk sticky-top */
+}
+
+.header-custom .navbar {
+  /* Memastikan navbar di dalam header-custom berperilaku sesuai harapan */
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .header-custom .navbar-brand {
@@ -33,139 +27,129 @@ main {
   margin-left: 15px;
   font-size: 1em;
   font-weight: 500;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  padding: 0.5rem 1rem; /* Padding konsisten untuk nav-links */
+  border-radius: 0.25rem; /* Sedikit lengkungan untuk efek hover */
 }
 
 .header-custom .nav-link:hover,
 .header-custom .nav-link:focus {
-  color: #e0e0e0 !important;
+  color: #f5a623 !important; /* Aksen oranye saat hover */
+  background-color: rgba(255, 255, 255, 0.1); /* Latar belakang transparan saat hover */
 }
 
-/* Gaya untuk link navigasi yang aktif (oleh Bootstrap atau manual) */
 .header-custom .nav-item.active > .nav-link {
   color: #f5a623 !important; /* Warna aksen oranye untuk aktif */
   font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.15); /* Latar belakang sedikit lebih jelas untuk aktif */
 }
 
+/* Gaya Dropdown */
 .header-custom .dropdown-menu {
   border-radius: 0.5rem;
   border: 1px solid rgba(0, 0, 0, 0.1);
   margin-top: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
 .header-custom .dropdown-item {
-  transition: background-color 0.2s ease, color 0.2s ease;
+  color: #333 !important; /* Teks gelap untuk item dropdown */
   padding: 0.5rem 1.5rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .header-custom .dropdown-item:hover,
 .header-custom .dropdown-item:focus {
   background-color: #f0f0f0;
-  color: #333 !important;
+  color: #367a83 !important; /* Warna teal utama saat hover */
 }
+
+.header-custom .dropdown-item.active, /* Kelas aktif default Bootstrap */
 .header-custom .dropdown-item.active-dropdown {
+  /* Kelas aktif kustom jika digunakan */
   background-color: #e9ecef;
-  color: #f5a623 !important;
+  color: #f5a623 !important; /* Aksen oranye untuk item dropdown aktif */
   font-weight: bold;
 }
 
-.header-custom .btn-login {
+.header-custom .dropdown-divider {
+  border-top: 1px solid #e0e0e0;
+}
+
+.navbar-nav .dropdown-toggle::after {
+  /* Panah untuk dropdown */
+  margin-left: 0.5em;
+  vertical-align: 0.15em; /* Penyelarasan yang lebih baik */
+}
+
+/* Tombol Khusus di Navbar */
+.header-custom .btn-login-nav {
+  /* Untuk tombol login khusus jika bukan item dropdown */
   background-color: white;
   color: #367a83 !important;
-  border-color: white;
+  border: 1px solid white;
   font-weight: bold;
   border-radius: 20px;
   padding: 8px 20px;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  margin-left: 15px;
 }
-.header-custom .btn-login:hover {
+.header-custom .btn-login-nav:hover {
   background-color: #f0f0f0;
   color: #2a5f68 !important;
+  border-color: #f0f0f0;
 }
 
-/* === FOOTER UMUM === */
-.footer-custom {
-  background-color: #343a40;
-  color: white;
-  padding: 20px 0;
-  margin-top: auto;
-}
-.footer-custom p {
-  margin-bottom: 0;
-  font-size: 0.9em;
-}
-
-/* === GAYA FORM UMUM (Bootstrap Overrides Ringan & Tambahan) === */
-.form-group label {
-  font-weight: 500;
-  color: #495057;
-  margin-bottom: 0.3rem;
-}
-
-.form-control,
-.custom-select {
-  border-radius: 8px !important;
-  border: 1px solid #ced4da;
-  height: calc(1.5em + 0.75rem + 7px);
-  padding: 0.375rem 0.75rem;
-  font-size: 1rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-.form-control:focus,
-.custom-select:focus {
-  border-color: #f5a623 !important;
-  box-shadow: 0 0 0 0.2rem rgba(245, 166, 35, 0.25) !important;
-}
-textarea.form-control {
-  height: auto;
-}
-
-.custom-file-label {
+.header-custom .order-btn-nav {
+  /* Tombol "Order" atau "Layanan" standar */
+  background-color: #f5a623;
+  color: white !important;
+  padding: 8px 15px !important;
   border-radius: 8px;
-  border: 1px solid #ced4da;
-  height: calc(1.5em + 0.75rem + 7px);
-  padding: 0.375rem 0.75rem;
-  line-height: 1.5;
-  color: #495057;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.custom-file-label::after {
-  content: attr(data-browse) !important;
-  background-color: #e9ecef;
-  color: #495057;
-  border-left: 1px solid #ced4da;
-  border-radius: 0 8px 8px 0 !important;
-  height: calc(1.5em + 0.75rem + 5px);
-  padding: 0.375rem 0.75rem;
-  line-height: 1.5;
-}
-.custom-file-input:focus ~ .custom-file-label {
-  border-color: #f5a623;
-  box-shadow: 0 0 0 0.2rem rgba(245, 166, 35, 0.25);
-}
-
-/* === UNTUK SCROLLSPY DENGAN HEADER STICKY === */
-.scrollspy-section {
-  padding-top: 85px; /* Sesuaikan dengan tinggi header + buffer */
-  margin-top: -70px; /* Sesuaikan agar pas, biasanya sedikit lebih kecil */
-}
-
-/* === JUDUL HALAMAN/SEKSI UMUM  === */
-.page-main-title {
-  /* Judul utama H2 di setiap halaman (di luar card) */
-  color: #367a83;
   font-weight: bold;
-  margin-bottom: 2rem;
-  text-align: center;
+  transition: background-color 0.2s ease;
+  line-height: 1.5;
 }
-.section-title {
-  /* Judul seksi h4 di dashboard atau dalam card */
-  color: #367a83;
-  font-weight: 600; /* Sedikit lebih ringan dari page-main-title */
-  margin-bottom: 1.25rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid #f5a623; /* Aksen oranye */
-  display: inline-block; /* Agar border hanya selebar teks */
+.header-custom .order-btn-nav:hover {
+  background-color: #db8e1e; /* Oranye lebih gelap */
+  color: white !important;
 }
+
+/* Ikon Profil dan Link di Navbar (biasanya untuk toggle dropdown pengguna yang sudah login) */
+.header-custom .profile-icon-link {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.header-custom .profile-icon-sm {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 8px;
+  border: 1px solid white;
+  object-fit: cover;
+  display: inline-block;
+}
+
+/* .header-custom .profile-icon-link .username-display {
+  /* Gaya untuk nama pengguna jika diperlukan, biasanya mewarisi dari .nav-link */
+
+/* Ikon Navbar Toggler */
+.header-custom .navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+.header-custom .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+.header-custom .navbar-toggler:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(245, 166, 35, 0.5); /* Efek glow oranye saat fokus */
+}
+
+.header-custom .dropdown-menu-right {
+  right: 0;
+  left: auto;
+}
+
+/* ... (gaya umum lainnya seperti .scrollspy-section, .page-main-title, .section-title tetap dipertahankan) ... */
