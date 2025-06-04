@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="../css/common.css">
-    <link rel="stylesheet" href="../css/bersih.css">
+    <link rel="stylesheet" href="../css/carikost.css">
 </head>
 
 <body>
@@ -121,21 +121,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <a class="nav-link" href="indexuser.php">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="pilihan.php" class="nav-link order-btn-nav">Order Layanan Lain</a>
+                        <a href="pilihan.php" class="nav-link order-btn-nav">Layanan</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button"
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOwner" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="../assets/img/default-profile.png" class="profile-icon-sm" alt="Profil">
                             <?php echo htmlspecialchars($_SESSION['username']); ?>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownUser">
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownOwner">
+                            <a class="dropdown-item" href="profil.php">Profil</a>
+                            <a class="dropdown-item" href="#">Pengaturan</a>
+                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="logout.php">Logout</a>
                         </div>
                     </li>

@@ -149,7 +149,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MOVER - Buat Pesanan Pindahan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/indexuser.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/carikost.css">
     <style>
     /* Anda bisa menambahkan style spesifik untuk order.php di sini jika perlu */
     /* Style dasar dari respons sebelumnya untuk kartu, dll. sudah ada di order_sukses.php */
@@ -246,19 +247,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
 </head>
 
 <body style="background-color: #418d99; color:white; padding-top: 90px;">
-    <header class="navbar fixed-top" style="background-color: #418d99;">
-        <div class="logo" style="color:white;">MOVER</div>
-        <nav class="nav-menu">
-            <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_SESSION['username'])): ?>
-            <div class="profile-icon" style="border: 2px solid white;">
-                <img src="../assets/img/default-profile.png"
-                    alt="<?php echo htmlspecialchars($_SESSION['username']); ?> Profile" />
+    <header class="header-custom sticky-top">
+        <nav class="container navbar navbar-expand-lg navbar-dark">
+            <a class="navbar-brand" href="indexuser.php">LOGO MOVER</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="indexuser.php">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pilihan.php" class="nav-link order-btn-nav">Layanan</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOwner" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <?php echo htmlspecialchars($_SESSION['username']); ?>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownOwner">
+                            <a class="dropdown-item" href="profil.php">Profil</a>
+                            <a class="dropdown-item" href="#">Pengaturan</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="logout.php">Logout</a>
+                        </div>
+                    </li>
+                </ul>
             </div>
-            <a href="indexuser.php" style="color:white;">Beranda</a>
-            <a href="logout.php"><button class="logout-btn">Logout</button></a>
-            <?php else: ?>
-            <a href="login.php" style="color:white;">Login</a>
-            <?php endif; ?>
         </nav>
     </header>
 

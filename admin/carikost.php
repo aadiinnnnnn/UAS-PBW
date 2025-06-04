@@ -35,12 +35,14 @@ require 'session.php'; // Memastikan pengguna sudah login
                         <a href="order.php" class="nav-link order-btn-nav">Order Pindahan</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button"
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOwner" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="../assets/img/default-profile.png" class="profile-icon-sm" alt="Profil">
                             <?php echo htmlspecialchars($_SESSION['username']); ?>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownUser">
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownOwner">
+                            <a class="dropdown-item" href="profil.php">Profil</a>
+                            <a class="dropdown-item" href="#">Pengaturan</a>
+                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="logout.php">Logout</a>
                         </div>
                     </li>
