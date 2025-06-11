@@ -74,9 +74,6 @@ Pastikan Anda telah menginstal XAMPP atau tumpukan server lokal lainnya yang men
       * Pilih database `mover`, lalu buka tab **Import**.
       * Impor file `mover.sql` (Anda perlu membuat file ini dari database Anda) atau jalankan query SQL berikut di tab **SQL** untuk membuat tabel-tabel yang diperlukan.
 
-    \<details\>
-    \<summary\>Klik untuk melihat struktur tabel SQL\</summary\>
-
     ```sql
     -- Tabel untuk pengguna dan pemilik
     CREATE TABLE `user` (
@@ -207,3 +204,10 @@ Pastikan Anda telah menginstal XAMPP atau tumpukan server lokal lainnya yang men
 4.  Jika Anda login sebagai **Pemilik Kost**, Anda akan diarahkan ke dasbor pemilik untuk mengelola properti Anda.
 
 -----
+Dibuat oleh Kelompok 4 
+- Muhammad Nugrah Adinda
+- Hana Nabila
+- Dandi Permana
+- Charina Olivia Tarigan
+- Fakhri Yudistra
+- Nayaka Alfikri Januar
