@@ -1,27 +1,15 @@
-// Di dalam file ../javascript/bersih.js
-
-function formatRupiah(angka, prefix = "Rp ") {
-  if (angka === null || angka === undefined || isNaN(parseFloat(angka))) {
-    return prefix + "0"; // Mengembalikan Rp 0 untuk input yang tidak valid
-  }
-  let number_string = parseFloat(angka)
-      .toString()
-      .replace(/[^,\d]/g, ""),
-    split = number_string.split(","),
-    sisa = split[0].length % 3,
-    rupiah = split[0].substr(0, sisa),
-    ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-  if (ribuan) {
-    let separator = sisa ? "." : "";
-    rupiah += separator + ribuan.join(".");
-  }
-
-  rupiah = split[1] !== undefined ? rupiah + "," + split[1] : rupiah;
-  return prefix + rupiah;
-}
-
+// Di dalam file bersih.js
 document.addEventListener("DOMContentLoaded", function () {
+  // Fungsi helper untuk format Rupiah
+  function formatRupiah(angka) {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(angka);
+  }
+
   const paketRadios = document.querySelectorAll(".paket-radio");
   const paketCards = document.querySelectorAll(".paket-card");
   const ringkasanDetailEl = document.getElementById("ringkasanDetail");
@@ -32,29 +20,42 @@ document.addEventListener("DOMContentLoaded", function () {
   const tanggalDatangInput = document.getElementById("tanggal_datang");
 
   function updateTotal() {
-    let total = 0;
-    let ringkasanHtml = '<p class="text-muted">Pilih paket untuk melihat rincian.</p>';
+    let hargaSetelahDiskon = 0;
+    let ringkasanHtml = '<p class="text-muted text-center mb-0">Pilih paket untuk melihat rincian.</p>';
     let idBk = "";
     let namaPaketText = "";
 
     const paketTerpilih = document.querySelector('input[name="paket_kos"]:checked');
 
     if (paketTerpilih) {
-      const hargaPaket = parseFloat(paketTerpilih.value);
+      const hargaAsli = parseFloat(paketTerpilih.value);
+      const diskonPersen = parseFloat(paketTerpilih.getAttribute("data-diskon")) || 0;
       namaPaketText = paketTerpilih.getAttribute("data-nama");
+      const deskripsiPaket = paketTerpilih.getAttribute("data-deskripsi");
       idBk = paketTerpilih.getAttribute("data-idbk");
 
-      total = hargaPaket;
+      const nilaiDiskon = hargaAsli * (diskonPersen / 100);
+      hargaSetelahDiskon = hargaAsli - nilaiDiskon;
 
       ringkasanHtml = `
-                <div class="d-flex justify-content-between">
-                    <span>${namaPaketText.split(" - ")[0]}</span>
-                    <span>${formatRupiah(hargaPaket)}</span>
-                </div>
-            `;
+          <div class="d-flex justify-content-between">
+              <span>${namaPaketText}</span>
+              <span>${formatRupiah(hargaAsli)}</span>
+          </div>
+      `;
 
-      if (namaPaketInputEl) namaPaketInputEl.value = namaPaketText;
-      if (totalBiayaInputEl) totalBiayaInputEl.value = total;
+      if (diskonPersen > 0) {
+        ringkasanHtml += `
+          <div class="d-flex justify-content-between text-danger">
+              <span>Diskon ${diskonPersen}%</span>
+              <span>- ${formatRupiah(nilaiDiskon)}</span>
+          </div>
+          <hr class="my-2">
+        `;
+      }
+
+      if (namaPaketInputEl) namaPaketInputEl.value = `${namaPaketText} - ${deskripsiPaket}`;
+      if (totalBiayaInputEl) totalBiayaInputEl.value = hargaSetelahDiskon;
       if (idBkInputEl) idBkInputEl.value = idBk;
     } else {
       if (namaPaketInputEl) namaPaketInputEl.value = "";
@@ -63,19 +64,22 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (ringkasanDetailEl) ringkasanDetailEl.innerHTML = ringkasanHtml;
-    if (totalBiayaTextEl) totalBiayaTextEl.innerText = formatRupiah(total);
+    if (totalBiayaTextEl) totalBiayaTextEl.innerText = formatRupiah(hargaSetelahDiskon);
   }
 
   paketCards.forEach((card) => {
-    card.addEventListener("click", function () {
+    card.addEventListener("click", function (event) {
+      // Hanya proses jika target klik bukan elemen interaktif lain di dalam kartu
+      if (event.target.tagName === "A" || event.target.tagName === "BUTTON") return;
+
       paketCards.forEach((c) => c.classList.remove("selected"));
       this.classList.add("selected");
 
       const radioInside = this.querySelector(".paket-radio");
-      if (radioInside) {
+      if (radioInside && !radioInside.checked) {
         radioInside.checked = true;
-        const event = new Event("change", { bubbles: true });
-        radioInside.dispatchEvent(event);
+        const changeEvent = new Event("change", { bubbles: true });
+        radioInside.dispatchEvent(changeEvent);
       }
     });
   });

@@ -9,6 +9,7 @@ session_start();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MOVER</title>
+    <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/index.css">
 
 </head>
@@ -30,7 +31,7 @@ session_start();
         <div class="hero-text">
             <h1>Pindah berkala<br>kosan ke kosan</h1>
             <p>Pake MOVER aja!</p>
-            <button class="cta-btn">Order Sekarang</button>
+            <a href="login.php"><button class="cta-btn">Order Sekarang</button></a>
         </div>
         <div class="hero-image">
             <div class="circle-bg"></div>

@@ -107,7 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p class="mt-3 text-center">
                 Belum punya akun? <a href="registrasi.php">Daftar di sini</a> </p>
             <p class="mt-2 text-center">
-                <a href="../index.php">Kembali ke Halaman Utama</a>
+                <a href="index.php">Kembali ke Halaman Utama</a>
             </p>
         </form>
     </div>
