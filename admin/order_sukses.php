@@ -143,19 +143,17 @@ $orderDetailsFromSession = $_SESSION['order_details'] ?? null;
 
     <main class="success-card-container-standalone">
         <div class="success-card-standalone">
-            <div class="success-icon-standalone"><i class="fas fa-check-circle"></i></div>
-            <h2 class="success-title-standalone">Pesanan Pindahan Anda Telah Diterima!</h2>
-            <p class="success-message-standalone">
-                Terima kasih telah memilih MOVER. Pesanan pindahan Anda sedang kami proses.
-                Tim kami akan segera menghubungi Anda untuk konfirmasi lebih lanjut.
-            </p>
             <div class="order-details-summary-standalone">
                 <h6>Detail Pesanan Anda:</h6>
+                <p><strong>Layanan:</strong> <span id="namaLayanan">Memuat...</span></p>
+
                 <p><strong>Nomor Pesanan:</strong> <span id="orderId">Memuat...</span></p>
                 <p><strong>Alamat Jemput:</strong> <span id="alamatJemput">Memuat...</span></p>
                 <p><strong>Alamat Tujuan:</strong> <span id="alamatTujuan">Memuat...</span></p>
                 <p><strong>Tanggal Pindahan:</strong> <span id="tanggalPindahan">Memuat...</span></p>
-                <p><strong>Barang Pindahan:</strong> <span id="barangPindahan" class="text-end">Memuat...</span></p>
+
+                <p><strong>Detail Barang:</strong> <span id="barangPindahan" class="text-end">Memuat...</span></p>
+
                 <hr>
                 <p><strong>Subtotal:</strong> <span id="subtotalDisplay">Memuat...</span></p>
                 <p class="text-danger" id="diskonDisplayWrapper" style="display:none;">
@@ -166,10 +164,11 @@ $orderDetailsFromSession = $_SESSION['order_details'] ?? null;
                         class="fw-bold">Memuat...</span></p>
                 <p><strong>Metode Pembayaran:</strong> <span id="metodePembayaran">Memuat...</span></p>
             </div>
-            <a href="order.php" class="btn btn-primary mt-3 ml-2">Pesan Pindahan Lain</a>
+            <a href="order.php" class="btn btn-primary mt-3 ml-2">Pesan Jasa Barang lain</a>
             <a href="indexuser.php" class="btn btn-secondary mt-3 ml-2">Kembali ke Dashboard</a>
             <a href="review_form.php?order_id=<?php echo htmlspecialchars($orderDetailsFromSession['orderId'] ?? 'N/A'); ?>&order_type=pindahan"
                 class="btn btn-info mt-3 ml-2">Berikan Ulasan</a>
+        </div>
         </div>
     </main>
 
@@ -180,7 +179,6 @@ $orderDetailsFromSession = $_SESSION['order_details'] ?? null;
     </footer>
 
     <script>
-    // Menyisipkan detail pesanan dari PHP Session ke variabel JavaScript
     const phpOrderDetails = <?php echo json_encode($orderDetailsFromSession); ?>;
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -188,6 +186,7 @@ $orderDetailsFromSession = $_SESSION['order_details'] ?? null;
 
         const orderDetails = phpOrderDetails;
         if (orderDetails) {
+            document.getElementById("namaLayanan").textContent = orderDetails.layanan || "Jasa Pindahan";
             document.getElementById("orderId").textContent = orderDetails.orderId || "N/A";
             document.getElementById("alamatJemput").textContent = orderDetails.asal || "N/A";
             document.getElementById("alamatTujuan").textContent = orderDetails.tujuan || "N/A";
@@ -198,8 +197,6 @@ $orderDetailsFromSession = $_SESSION['order_details'] ?? null;
                 year: 'numeric'
             }) : "N/A";
             document.getElementById("barangPindahan").textContent = orderDetails.barangPindahanDisplay || "N/A";
-
-            // BARU: Tampilkan detail biaya
             document.getElementById("subtotalDisplay").textContent = formatRupiah(orderDetails.subtotal || 0);
             if (orderDetails.diskonPersen > 0) {
                 document.getElementById("diskonDisplay").textContent =
