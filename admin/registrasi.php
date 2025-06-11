@@ -125,22 +125,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body class="register-page-body">
-    <header class="header-custom sticky-top">
-        <nav class="container navbar navbar-expand-lg navbar-dark">
-            <a class="navbar-brand" class="" href="indexuser.php"><img src="../image/logo mover.png" alt=""
-                    style="height: 70px;"></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a href="index.php" class="nav-link order-btn-nav">Home</a>
-                    </li>
-            </div>
-        </nav>
-    </header>
     <div class="register-card">
         <h2 class="register-title">Daftar Akun Baru</h2> <?php if (!empty($error_message)): ?>
         <div class="alert alert-danger" role="alert">

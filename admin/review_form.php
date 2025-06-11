@@ -6,75 +6,72 @@ $user_id = $_SESSION['user_id'] ?? null;
 $username = $_SESSION['username'] ?? 'User';
 
 $order_id_ref = $_GET['order_id'] ?? null;
-$order_type = $_GET['order_type'] ?? null; 
+$order_type = $_GET['order_type'] ?? null;
 
 $message = '';
 $error = '';
 $order_info_display = 'Order tidak ditemukan atau tidak valid.';
-$order_data = null; 
+$order_data = null;
+$is_valid_order = false;
 
+// 1. Validasi parameter awal
 if (empty($order_id_ref) || empty($order_type)) {
-    $error = "Parameter order_id atau order_type tidak lengkap.";
+    $error = "Parameter tidak lengkap. Tidak dapat memuat detail ulasan.";
 } else {
-    // Inisialisasi variabel query
-    $table = '';
-    $id_col = '';
-    $item_desc_col = '';
-    $additional_join = '';
-    $select_cols = '*';
+    $sql_check_order = '';
+    $item_desc_col = 'item_description'; // Nama alias kolom yang konsisten untuk deskripsi
 
-    // Switch-case untuk menangani SETIAP jenis layanan secara terpisah
+    // 2. Siapkan kueri yang benar untuk setiap jenis layanan
     switch ($order_type) {
         case 'kost':
-            $table = 'order_sewa_kost';
-            $id_col = 'id_order_sewa';
-            $additional_join = ' JOIN pengelolaan_kost pk ON id_kos_plk = pk.id_kos_plk';
-            $select_cols = '*, pk.nama as nama_item';
-            $item_desc_col = 'nama_item'; // Sudah benar, karena menggunakan alias
+            // Kueri untuk sewa kost, JOIN dengan pengelolaan_kost untuk mendapatkan nama kost
+            $sql_check_order = "SELECT o.id_order_sewa, p.nama AS {$item_desc_col}
+                                FROM order_sewa_kost o
+                                JOIN pengelolaan_kost p ON o.id_kos_plk = p.id_kos_plk
+                                WHERE o.id_order_sewa = ? AND o.id_user = ?";
             break;
-        
+
         case 'pindahan':
-            $table = 'order_layanan_pindahan_barang_kos';
-            $id_col = 'id_order_pk';
-            // PERBAIKAN: Menghapus prefix 'o.'
-            $item_desc_col = 'jenis_barang';
+            // Kueri untuk layanan pindahan barang
+            $sql_check_order = "SELECT id_order_pk, jenis_barang AS {$item_desc_col}
+                                FROM order_layanan_pindahan_barang_kos
+                                WHERE id_order_pk = ? AND id_user = ?";
             break;
 
         case 'bersih':
-            $table = 'order_layanan_bersih_kos';
-            $id_col = 'id_order_bk';
-            // PERBAIKAN: Menghapus prefix 'o.'
-            $item_desc_col = 'jenis_paket_bk';
+            // Kueri untuk layanan bersih-bersih
+            $sql_check_order = "SELECT id_order_bk, jenis_paket_bk AS {$item_desc_col}
+                                FROM order_layanan_bersih_kos
+                                WHERE id_order_bk = ? AND id_user = ?";
             break;
 
         default:
-            $error = "Tipe order tidak valid.";
+            $error = "Tipe layanan tidak valid.";
     }
 
-    if (empty($error) && !empty($table)) {
-        $stmt_order_check = $conn->prepare("SELECT * FROM {$table} {$additional_join} WHERE {$id_col} = ? AND id_user = ?");
-        
+    // 3. Eksekusi Kueri jika valid
+    if (empty($error) && !empty($sql_check_order)) {
+        $stmt_order_check = $conn->prepare($sql_check_order);
         if ($stmt_order_check) {
+            // Bind parameter ke kueri (ID Order dan ID User)
             $stmt_order_check->bind_param("ss", $order_id_ref, $user_id);
             $stmt_order_check->execute();
             $result_order_check = $stmt_order_check->get_result();
 
             if ($result_order_check->num_rows > 0) {
                 $order_data = $result_order_check->fetch_assoc();
-                
-                // PERBAIKAN: Mengakses kolom deskripsi menggunakan variabel yang sudah diperbaiki
-                if (isset($order_data[$item_desc_col])) {
-                    $order_info_display = "Order ID: #" . htmlspecialchars($order_id_ref) . " | Layanan: " . htmlspecialchars($order_data[$item_desc_col]);
-                } else {
-                    $order_info_display = "Order ID: #" . htmlspecialchars($order_id_ref);
-                }
+                $is_valid_order = true;
 
-                // Cek ulasan duplikat (logika ini berlaku untuk semua layanan)
+                // Siapkan teks informasi order untuk ditampilkan di form
+                $order_info_display = "Order #" . htmlspecialchars($order_id_ref) . " | Layanan: " . htmlspecialchars($order_data[$item_desc_col]);
+
+                // 4. Cek apakah ulasan untuk order ini sudah ada
                 $stmt_check_ulasan = $conn->prepare("SELECT id_ulasan FROM ulasan_layanan WHERE id_user = ? AND id_order = ? AND jenis_layanan = ?");
                 if ($stmt_check_ulasan) {
                     $stmt_check_ulasan->bind_param("sss", $user_id, $order_id_ref, $order_type);
                     $stmt_check_ulasan->execute();
                     if ($stmt_check_ulasan->get_result()->num_rows > 0) {
+                        // Redirect ke halaman status jika ulasan sudah ada
                         header("Location: submit_review.php?status=duplicate&order_id=" . urlencode($order_id_ref) . "&order_type=" . urlencode($order_type));
                         exit();
                     }
@@ -82,37 +79,42 @@ if (empty($order_id_ref) || empty($order_type)) {
                 }
 
             } else {
-                $error = "Order tidak ditemukan atau bukan milik Anda.";
+                $error = "Order tidak ditemukan atau Anda tidak memiliki akses ke order ini.";
             }
             $stmt_order_check->close();
         } else {
-            $error = "Gagal menyiapkan query order: " . $conn->error;
+            $error = "Gagal menyiapkan kueri verifikasi order: " . $conn->error;
         }
     }
 }
 
-// Proses form submission (logika ini umum dan tidak perlu diubah)
+// 5. Proses form submission untuk menyimpan ulasan baru
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_review'])) {
     $rating = $_POST['rating'] ?? 0;
-    $comment = $_POST['comment'] ?? '';
+    $comment = trim($_POST['comment'] ?? '');
     $final_order_id = $_POST['order_id_ref'] ?? null;
     $final_order_type = $_POST['order_type'] ?? null;
 
-    if ($rating < 1 || $rating > 5 || empty($final_order_id) || empty($final_order_type)) {
-        $error = "Rating atau informasi order tidak valid.";
+    // Validasi input
+    if ($rating < 1 || $rating > 5) {
+        $error = "Rating tidak valid. Harap pilih antara 1 hingga 5 bintang.";
+    } elseif (empty($final_order_id) || empty($final_order_type)) {
+        $error = "Informasi order tidak lengkap. Gagal menyimpan ulasan.";
     } else {
+        // Masukkan ulasan ke database
         $stmt_insert_ulasan = $conn->prepare("INSERT INTO ulasan_layanan (id_user, id_order, jenis_layanan, rating, komentar) VALUES (?, ?, ?, ?, ?)");
         if ($stmt_insert_ulasan) {
             $stmt_insert_ulasan->bind_param("sssis", $user_id, $final_order_id, $final_order_type, $rating, $comment);
             if ($stmt_insert_ulasan->execute()) {
+                // Redirect ke halaman sukses setelah berhasil menyimpan
                 header("Location: submit_review.php?status=success&order_id=" . urlencode($final_order_id) . "&order_type=" . urlencode($final_order_type));
                 exit();
             } else {
-                $error = "Gagal menyimpan ulasan: " . $stmt_insert_ulasan->error;
+                $error = "Gagal menyimpan ulasan ke database: " . $stmt_insert_ulasan->error;
             }
             $stmt_insert_ulasan->close();
         } else {
-            $error = "Gagal menyiapkan statement ulasan: " . $conn->error;
+            $error = "Gagal menyiapkan statement untuk menyimpan ulasan: " . $conn->error;
         }
     }
 }
@@ -159,14 +161,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_review'])) {
     <main class="main-content">
         <div class="review-container">
             <h2>Bagaimana Pengalamanmu di Mover?</h2>
-            <p class="order-info">Kami Menghargai Feedback dari kamu!</p>
+            <p class="order-info">Kami menghargai masukan darimu!</p>
 
             <?php if (!empty($error)): ?>
             <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
-            <?php elseif (empty($order_data)): ?>
-            <div class="alert alert-warning">Order tidak valid atau tidak ditemukan. <a href="indexuser.php">Kembali ke
-                    beranda</a>.</div>
-            <?php else: ?>
+            <?php endif; ?>
+
+            <?php if ($is_valid_order): ?>
             <p class="order-info"><strong>Detail Order:</strong> <?php echo $order_info_display; ?></p>
             <form
                 action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>?order_id=<?php echo urlencode($order_id_ref);?>&order_type=<?php echo urlencode($order_type);?>"
@@ -192,13 +193,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_review'])) {
                 </div>
 
                 <div class="form-group">
-                    <label for="comment">Komentar Anda:</label>
+                    <label for="comment">Komentar Anda (Opsional):</label>
                     <textarea id="comment" name="comment" rows="5" placeholder="Bagikan pendapatmu tentang layanan..."
                         maxlength="500"></textarea>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100">Kirim Ulasan</button>
             </form>
+            <?php else: ?>
+            <div class="alert alert-warning">Tidak dapat memuat form ulasan. <a href="indexuser.php">Kembali ke
+                    beranda</a>.</div>
             <?php endif; ?>
         </div>
     </main>

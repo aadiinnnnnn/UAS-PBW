@@ -30,7 +30,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
         exit;
     }
 
-    // MODIFIKASI: Kalkulasi ulang total biaya & DISKON di server
     $subtotalServer = 0;
     $biayaJarakServer = $jarak_km * $harga_per_km_server;
     $subtotalServer += $biayaJarakServer;
@@ -48,7 +47,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
     }
     $jenis_barang_for_db = implode(", ", $barangPindahanDisplayArray);
 
-    // BARU: Logika Diskon di Server
     $diskonPersenServer = 0;
     if ($subtotalServer > 200000) {
         $diskonPersenServer = 15;
@@ -75,7 +73,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
     );
 
     if ($stmt) {
-        // MODIFIKASI: Gunakan $hargaFinalServer untuk total_harga_pk
         $stmt->bind_param(
             "sssdsdssss", 
             $id_user_session, $alamat_asal, $alamat_tujuan, $jarak_km, $tanggal_pindah, 
@@ -85,9 +82,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_order_js'])) {
         if ($stmt->execute()) {
             $newOrderId = mysqli_insert_id($conn);
 
-            // MODIFIKASI: Simpan detail diskon ke session untuk halaman sukses
             $_SESSION['order_details'] = [
                 'orderId' => $newOrderId,
+                'layanan' => 'Jasa Pindahan Barang',
                 'subtotal' => $subtotalServer,
                 'diskonPersen' => $diskonPersenServer,
                 'nilaiDiskon' => $nilaiDiskonServer,

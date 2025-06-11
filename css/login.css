@@ -5,14 +5,14 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #f0f2f5; /* Warna latar belakang yang lembut */
+  background-color: #418d99; /* Warna latar belakang yang lembut */
   padding: 20px; /* Beri padding agar container tidak menempel di tepi layar kecil */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Contoh font yang lebih modern */
 }
 
 /* Style untuk kontainer login utama */
 .login-container {
-  background-color: #ffffff;
+  background-color: #418d99;
   padding: 35px 40px; /* Padding di dalam kontainer (atas-bawah kiri-kanan) */
   border-radius: 10px; /* Sudut yang membulat */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Bayangan halus */
@@ -94,25 +94,4 @@
     font-size: 1rem;
     margin-bottom: 20px;
   }
-}
-
-.login-page-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Ini untuk tengah secara horizontal */
-  justify-content: center; /* Ini untuk tengah secara vertikal */
-  min-height: 100vh;
-  background-color: #f0f2f5;
-  padding: 20px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.login-container {
-  background-color: #ffffff;
-  padding: 35px 40px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 450px; /* Ini membatasi lebar form */
-  text-align: center;
 }
