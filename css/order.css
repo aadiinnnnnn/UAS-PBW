@@ -1,104 +1,161 @@
-.success-section {
+/* In ../css/order.css (atau file CSS terpisah yang dilink) */
+
+body.order-success-page {
+  background-color: #f0f2f5; /* Latar belakang netral untuk halaman */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.success-card-container-standalone {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 20px;
-  text-align: center;
-  display: none;
+  margin-top: 50px; /* Sesuaikan jika header Anda fixed dengan tinggi berbeda */
+  margin-bottom: 20px;
 }
 
-.success-card {
-  background-color: #fff;
-  color: #333;
+.success-card-standalone {
+  background-color: #ffffff;
+  color: #343a40; /* Warna teks utama yang lebih gelap */
   border-radius: 15px;
-  padding: 30px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  display: inline-block;
+  padding: 30px 35px; /* Padding disesuaikan */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Bayangan yang lebih halus */
+  max-width: 700px; /* Lebar kartu bisa sedikit lebih besar */
+  width: 100%;
+  text-align: center;
 }
 
-.success-icon {
-  font-size: 50px;
-  color: green;
-  margin-bottom: 15px;
+.success-icon-standalone {
+  font-size: 4.5rem; /* Ukuran ikon */
+  color: #28a745; /* Warna hijau sukses */
+  margin-bottom: 20px;
+  line-height: 1;
 }
 
-.success-title {
-  font-size: 24px;
-  margin-bottom: 10px;
+.success-title-standalone {
+  font-size: 2rem; /* Ukuran judul */
+  font-weight: 700;
+  color: #367a83; /* Warna utama MOVER */
+  margin-bottom: 1rem;
 }
 
-.order-details-summary {
+.success-message-standalone {
+  font-size: 1.1rem;
+  color: #495057; /* Abu-abu gelap untuk pesan */
+  margin-bottom: 25px;
+}
+
+.order-details-summary-standalone {
   text-align: left;
   margin-top: 20px;
-}
-
-.order-details-summary p {
-  margin-bottom: 5px;
-}
-
-.order-details-summary hr {
-  margin: 10px 0;
-}
-
-.btn-back-home {
-  margin-top: 20px;
-  background-color: #418d99;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  text-decoration: none;
-}
-
-.btn-back-home:hover {
-  background-color: #367a8a;
-}
-
-.content-section {
+  border-top: 1px solid #dee2e6; /* Garis pemisah */
   padding-top: 20px;
-  padding-bottom: 20px;
 }
 
-/* Gaya tambahan untuk form agar lebih sesuai dengan tema */
-.form-card,
-.summary-card {
-  background-color: #ffffff;
-  color: #333;
-  /* Teks gelap di dalam kartu */
-  border: none;
-}
-
-.title-order {
-  color: white;
-  /* Judul utama halaman tetap putih */
-  font-weight: bold;
-}
-
-.form-title,
-.summary-title,
-.payment-title {
-  color: #2f4f4f;
-  /* Judul di dalam kartu */
+.order-details-summary-standalone h6 {
+  font-size: 1.25rem; /* Judul detail pesanan */
+  color: #367a83; /* Warna utama MOVER */
+  margin-bottom: 15px;
   font-weight: 600;
 }
 
-.form-label {
-  color: #495057;
-  /* Warna label form */
+/* Styling untuk Definition List (dl, dt, dd) */
+.order-details-summary-standalone dl.row {
+  font-size: 1rem; /* Ukuran font dasar untuk detail */
+}
+
+.order-details-summary-standalone dl.row dt {
+  font-weight: 600; /* Label tebal */
+  color: #495057; /* Warna label */
+  padding-bottom: 0.5rem;
+}
+
+.order-details-summary-standalone dl.row dd {
+  color: #212529; /* Warna nilai */
+  padding-bottom: 0.5rem;
+  word-wrap: break-word;
+}
+
+.order-details-summary-standalone dl.row dd strong {
+  /* Untuk Total Pembayaran */
+  color: #f5a623; /* Warna aksen MOVER untuk harga */
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+/* Tombol Aksi */
+.success-card-standalone .btn {
   font-weight: 500;
-}
-
-.form-control {
+  padding: 0.65rem 1.25rem; /* Padding tombol */
   border-radius: 8px;
-  border: 1px solid #ced4da;
+  transition: all 0.2s ease-in-out;
+  min-width: 180px; /* Agar tombol memiliki lebar minimal yang sama */
+  margin: 5px; /* Jarak antar tombol jika wrapping */
 }
 
-.btn-success-custom {
-  background-color: #ffd700;
-  /* Warna tombol bayar */
-  border-color: #ffd700;
-  color: #2f4f4f;
-  font-weight: 600;
-  padding: 10px 20px;
+.success-card-standalone .btn-primary {
+  background-color: #f5a623; /* Warna Oranye MOVER */
+  border-color: #f5a623;
+  color: white;
+}
+.success-card-standalone .btn-primary:hover {
+  background-color: #db8e1e; /* Oranye lebih gelap */
+  border-color: #db8e1e;
 }
 
-.btn-success-custom:hover {
-  background-color: #e0c200;
-  border-color: #e0c200;
+.success-card-standalone .btn-secondary {
+  background-color: #6c757d; /* Warna sekunder Bootstrap */
+  border-color: #6c757d;
+  color: white;
+}
+.success-card-standalone .btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
+.success-card-standalone .btn-info {
+  background-color: #0dcaf0; /* Warna info Bootstrap */
+  border-color: #0dcaf0;
+  color: white;
+}
+.success-card-standalone .btn-info:hover {
+  background-color: #0aa8c2;
+  border-color: #0aa8c2;
+}
+
+/* Responsif untuk daftar detail */
+@media (max-width: 575.98px) {
+  .success-card-standalone {
+    padding: 25px 20px;
+  }
+  .success-icon-standalone {
+    font-size: 3.5rem;
+  }
+  .success-title-standalone {
+    font-size: 1.7rem;
+  }
+  .success-message-standalone {
+    font-size: 1rem;
+  }
+  .order-details-summary-standalone dl.row dt,
+  .order-details-summary-standalone dl.row dd {
+    font-size: 0.9rem;
+    text-align: left; /* Detail tetap rata kiri di mobile */
+  }
+  .order-details-summary-standalone dl.row dt {
+    margin-bottom: 0.1rem; /* Kurangi jarak antar dt dan dd di mobile */
+  }
+  .order-details-summary-standalone dl.row dd {
+    margin-bottom: 0.6rem;
+  }
+  .success-card-standalone .btn {
+    width: 100%; /* Tombol full width di mobile */
+    margin-bottom: 10px;
+  }
+  .d-flex.justify-content-center.flex-wrap.gap-2 {
+    flex-direction: column; /* Susun tombol secara vertikal */
+  }
 }

@@ -5,8 +5,11 @@ include '..\koneksi.php'; // Koneksi ke database
 $message = '';
 $error = '';
 $paket_layanan = [];
+// BARU: Definisikan persentase diskon. Urutan penting: [murah, menengah, mahal]
+$discounts = [10, 30, 50]; 
 
 // Ambil data paket dari database untuk mengisi radio button
+// Diurutkan dari harga termurah ke termahal
 $query_paket = "SELECT id_bk, jenis_paket_bk, deskripsi_layanan_bk, durasi_layanan_bk, harga_bk FROM layanan_bersih_kos ORDER BY harga_bk ASC";
 $result_paket = mysqli_query($conn, $query_paket);
 if ($result_paket) {
@@ -18,7 +21,7 @@ if ($result_paket) {
         $error = "Tidak ada data paket layanan yang ditemukan di database.";
     }
 } else {
-    $error = "Gagal memuat daftar paket layanan: " . mysqli_error($conn) . " (Query: " . $query_paket . ")";
+    $error = "Gagal memuat daftar paket layanan: " . mysqli_error($conn);
 }
 
 // Logic untuk memproses form submission
@@ -27,57 +30,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_bk = $_POST['id_bk'] ?? ''; // ID paket dari form
     $jenis_paket_bk = $_POST['nama_paket'] ?? ''; // Nama paket dari form
     $metode_pembayaran_bk = $_POST['metode_pembayaran'] ?? ''; // Metode pembayaran
-    $total_harga_bk = $_POST['total_biaya_input'] ?? 0; // Total harga
+    $total_harga_bk_client = (float) ($_POST['total_biaya_input'] ?? 0); // Total harga dari klien
     $tanggal_datang_bk = $_POST['tanggal_datang'] ?? ''; // Tanggal datang/pelaksanaan
 
     // Validasi input
-    if (empty($id_bk) || empty($jenis_paket_bk) || empty($metode_pembayaran_bk) || $total_harga_bk <= 0 || empty($tanggal_datang_bk)) {
+    if (empty($id_bk) || empty($jenis_paket_bk) || empty($metode_pembayaran_bk) || $total_harga_bk_client <= 0 || empty($tanggal_datang_bk)) {
         $error = "Semua field wajib diisi.";
-    } elseif ($total_harga_bk <= 0) {
-        $error = "Total biaya harus lebih dari Rp 0.";
     } else {
         // Mendapatkan tanggal order saat ini
         $tanggal_order_bk = date('Y-m-d');
 
-        // Pastikan id_bk ada di database dan harga sesuai
+        // MODIFIKASI: Validasi harga dengan memperhitungkan diskon di server
         $stmt_check_paket = $conn->prepare("SELECT harga_bk, deskripsi_layanan_bk FROM layanan_bersih_kos WHERE id_bk = ?");
         if ($stmt_check_paket) {
             $stmt_check_paket->bind_param("s", $id_bk);
             $stmt_check_paket->execute();
             $result_check_paket = $stmt_check_paket->get_result();
+
             if ($result_check_paket->num_rows > 0) {
                 $data_paket_db = $result_check_paket->fetch_assoc();
-                $harga_valid_db = $data_paket_db['harga_bk'];
+                $harga_asli_db = (float) $data_paket_db['harga_bk'];
                 $deskripsi_paket_db = $data_paket_db['deskripsi_layanan_bk'];
 
-                // Verifikasi harga dari client dengan harga dari database
-                if ($total_harga_bk != $harga_valid_db) {
-                    $error = "Harga paket tidak sesuai dengan data. Ada masalah validasi.";
+                // BARU: Tentukan diskon yang seharusnya berlaku di server
+                $diskon_server = 0;
+                // Kita cari tahu index paket yang dipesan untuk menentukan diskonnya
+                $paket_index = -1;
+                foreach ($paket_layanan as $index => $paket) {
+                    if ($paket['id_bk'] == $id_bk) {
+                        $paket_index = $index;
+                        break;
+                    }
+                }
+
+                if ($paket_index !== -1 && isset($discounts[$paket_index])) {
+                    $diskon_server = $discounts[$paket_index];
+                }
+
+                // BARU: Hitung harga final yang seharusnya di sisi server
+                $nilai_diskon_server = $harga_asli_db * ($diskon_server / 100);
+                $harga_final_server = $harga_asli_db - $nilai_diskon_server;
+                
+                // BARU: Verifikasi harga dari client dengan harga yang dihitung server (beri toleransi kecil)
+                if (abs($total_harga_bk_client - $harga_final_server) > 0.01) {
+                    $error = "Validasi harga gagal. Harga yang diterima: Rp " . number_format($total_harga_bk_client) . ", seharusnya: Rp " . number_format($harga_final_server) . ".";
                 } else {
                     // Masukkan data ke tabel order_layanan_bersih_kos
-                    // *** PERHATIKAN: id_order_bk tidak disertakan di sini ***
                     $stmt_insert = $conn->prepare("INSERT INTO order_layanan_bersih_kos (id_bk, id_user, jenis_paket_bk, tanggal_order_bk, tanggal_datang_bk, total_harga_bk, metode_pembayaran_bk) VALUES (?, ?, ?, ?, ?, ?, ?)");
                     if ($stmt_insert) {
-                        // *** PERHATIKAN: Tidak ada 'i' untuk id_order_bk di sini ***
-                        $stmt_insert->bind_param("sssssds", $id_bk, $id_user, $jenis_paket_bk, $tanggal_order_bk, $tanggal_datang_bk, $total_harga_bk, $metode_pembayaran_bk);
+                        $stmt_insert->bind_param("sssssds", $id_bk, $id_user, $jenis_paket_bk, $tanggal_order_bk, $tanggal_datang_bk, $harga_final_server, $metode_pembayaran_bk);
 
-                        if ($stmt_insert->execute()) { // Baris ini adalah baris 61
-                            // Simpan detail pesanan ke session untuk halaman sukses
+                        if ($stmt_insert->execute()) {
                             $_SESSION['latestBersihOrderDetails'] = [
-                                'orderId' => $stmt_insert->insert_id, // Gunakan ID yang di-generate otomatis oleh DB
+                                'orderId' => $stmt_insert->insert_id,
                                 'id_bk' => $id_bk,
                                 'jenis_paket_bk' => $jenis_paket_bk,
                                 'tanggal_order_bk' => $tanggal_order_bk,
                                 'tanggal_datang_bk' => $tanggal_datang_bk,
-                                'total_harga_bk' => $total_harga_bk,
+                                'total_harga_bk' => $harga_final_server,
                                 'metode_pembayaran_bk' => $metode_pembayaran_bk,
-                                'deskripsi_paket' => $deskripsi_paket_db // Sertakan deskripsi dari DB
+                                'deskripsi_paket' => $deskripsi_paket_db
                             ];
-                            // Redirect ke halaman sukses
                             header("Location: order_bersih_sukses.php");
                             exit();
                         } else {
-                            $error = "Gagal menyimpan pesanan ke database: " . $stmt_insert->error;
+                            $error = "Gagal menyimpan pesanan: " . $stmt_insert->error;
                         }
                         $stmt_insert->close();
                     } else {
@@ -142,45 +159,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container py-5">
         <h2 class="mb-4">Form Pemesanan Jasa Bersih Kos</h2>
 
-        <?php if (!empty($message)): ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <?php echo $message; ?>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <?php endif; ?>
         <?php if (!empty($error)): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <?php echo $error; ?>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         <?php endif; ?>
 
         <form method="POST" action="">
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label">Pilih Paket <span class="text-danger">*</span></label>
                 <?php if (!empty($paket_layanan)): ?>
-                <?php foreach ($paket_layanan as $paket): ?>
-                <div class="form-check">
-                    <input class="form-check-input paket-radio" type="radio" name="paket_kos"
-                        id="paket_<?php echo htmlspecialchars($paket['id_bk']); ?>"
-                        value="<?php echo htmlspecialchars($paket['harga_bk']); ?>"
-                        data-idbk="<?php echo htmlspecialchars($paket['id_bk']); ?>"
-                        data-nama="<?php echo htmlspecialchars($paket['jenis_paket_bk'] . ' - ' . $paket['deskripsi_layanan_bk']); ?>"
-                        required>
-                    <label class="form-check-label" for="paket_<?php echo htmlspecialchars($paket['id_bk']); ?>">
-                        <?php echo htmlspecialchars($paket['jenis_paket_bk']); ?> -
-                        <?php echo htmlspecialchars($paket['deskripsi_layanan_bk']); ?> (Rp
-                        <?php echo number_format($paket['harga_bk'], 0, ',', '.'); ?>)
-                    </label>
+                <div class="row">
+                    <?php foreach ($paket_layanan as $index => $paket): ?>
+                    <?php
+                            // BARU: Tentukan diskon berdasarkan index
+                            $diskon_persen = isset($discounts[$index]) ? $discounts[$index] : 0;
+                        ?>
+                    <div class="col-md-4 mb-3">
+                        <div class="form-check paket-card p-3">
+                            <input class="form-check-input paket-radio visually-hidden" type="radio" name="paket_kos"
+                                id="paket_<?php echo htmlspecialchars($paket['id_bk']); ?>"
+                                value="<?php echo htmlspecialchars($paket['harga_bk']); ?>"
+                                data-idbk="<?php echo htmlspecialchars($paket['id_bk']); ?>"
+                                data-nama="<?php echo htmlspecialchars($paket['jenis_paket_bk']); ?>"
+                                data-deskripsi="<?php echo htmlspecialchars($paket['deskripsi_layanan_bk']); ?>"
+                                data-diskon="<?php echo $diskon_persen; ?>" required>
+                            <label class="form-check-label w-100"
+                                for="paket_<?php echo htmlspecialchars($paket['id_bk']); ?>">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="paket-nama mb-0">
+                                        <?php echo htmlspecialchars($paket['jenis_paket_bk']); ?></h5>
+                                    <?php if ($diskon_persen > 0): ?>
+                                    <span class="badge badge-diskon"><?php echo $diskon_persen; ?>% OFF</span>
+                                    <?php endif; ?>
+                                </div>
+                                <p class="paket-deskripsi text-muted">
+                                    <?php echo htmlspecialchars($paket['deskripsi_layanan_bk']); ?></p>
+                                <p class="paket-harga text-end">Rp
+                                    <?php echo number_format($paket['harga_bk'], 0, ',', '.'); ?></p>
+                            </label>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
                 </div>
-                <?php endforeach; ?>
                 <?php else: ?>
                 <p class="text-muted">Tidak ada paket layanan yang tersedia saat ini.</p>
-                <p class="text-muted">Harap tambahkan data ke tabel `layanan_bersih_kos` di database Anda.</p>
                 <?php endif; ?>
             </div>
 
@@ -202,24 +226,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </select>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-4">
                 <h5>Ringkasan Pesanan</h5>
-                <div id="ringkasanDetail" class="p-3 border rounded text-muted">Pilih paket untuk melihat ringkasan.
+                <div id="ringkasanDetail" class="p-3 border rounded bg-light">
+                    <p class="text-muted text-center mb-0">Pilih paket untuk melihat ringkasan.</p>
                 </div>
-                <p class="mt-2"><strong>Total: </strong><span id="totalBiayaText">Rp 0</span></p>
+                <div class="d-flex justify-content-between fw-bold mt-3" style="font-size: 1.2em;">
+                    <span>Total Akhir:</span>
+                    <span id="totalBiayaText">Rp 0</span>
+                </div>
             </div>
 
             <input type="hidden" name="id_bk" id="id_bk_input">
             <input type="hidden" name="nama_paket" id="nama_paket_input">
             <input type="hidden" name="total_biaya_input" id="total_biaya_input">
 
-            <button type="submit" class="btn btn-pesan">Pesan Sekarang</button>
+            <button type="submit" class="btn btn-pesan w-100">Pesan Sekarang</button>
         </form>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../javascript/bersih.js" defer></script>
 </body>
 

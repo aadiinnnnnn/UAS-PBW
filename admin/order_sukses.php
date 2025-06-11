@@ -1,13 +1,7 @@
 <?php
-require 'session.php'; // Memastikan pengguna sudah login
+require 'session.php';
 
-$orderDetailsFromSession = null;
-// Coba ambil detail pesanan dari session PHP
-if (isset($_SESSION['order_details'])) {
-    $orderDetailsFromSession = $_SESSION['order_details'];
-    // Opsional: Unset session di sini jika sudah tidak diperlukan lagi
-    // unset($_SESSION['order_details']); // [Peninjauan]: Aktifkan ini jika ingin menghapus data session setelah ditampilkan.
-}
+$orderDetailsFromSession = $_SESSION['order_details'] ?? null;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -20,7 +14,7 @@ if (isset($_SESSION['order_details'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="../css/common.css">
     <style>
-    /* Gaya khusus untuk halaman sukses ini */
+    /* CSS dari file order_sukses.php yang sudah ada bisa dipertahankan */
     body.order-success-page {
         background-color: #f0f2f5;
         display: flex;
@@ -35,7 +29,6 @@ if (isset($_SESSION['order_details'])) {
         justify-content: center;
         padding: 20px;
         margin-top: 70px;
-        /* Offset untuk sticky header */
         margin-bottom: 20px;
     }
 
@@ -53,7 +46,6 @@ if (isset($_SESSION['order_details'])) {
     .success-icon-standalone {
         font-size: 4.5rem;
         color: #28a745;
-        /* Warna hijau sukses */
         margin-bottom: 20px;
         line-height: 1;
     }
@@ -62,7 +54,6 @@ if (isset($_SESSION['order_details'])) {
         font-size: 2rem;
         font-weight: 700;
         color: #367A83;
-        /* Warna MOVER primary */
         margin-bottom: 15px;
     }
 
@@ -90,20 +81,18 @@ if (isset($_SESSION['order_details'])) {
         margin-bottom: 10px;
         font-size: 1rem;
         color: #333;
+        display: flex;
+        justify-content: space-between;
     }
 
     .order-details-summary-standalone p strong {
-        color: #495057;
-        min-width: 170px;
-        /* Lebar minimum untuk label strong */
-        display: inline-block;
         font-weight: 600;
+        color: #495057;
     }
 
     .btn-back-home-standalone {
         margin-top: 25px;
         background-color: #F5A623;
-        /* Warna aksen oranye */
         color: white;
         padding: 12px 30px;
         font-size: 1.05rem;
@@ -165,18 +154,19 @@ if (isset($_SESSION['order_details'])) {
                 <p><strong>Nomor Pesanan:</strong> <span id="orderId">Memuat...</span></p>
                 <p><strong>Alamat Jemput:</strong> <span id="alamatJemput">Memuat...</span></p>
                 <p><strong>Alamat Tujuan:</strong> <span id="alamatTujuan">Memuat...</span></p>
-                <p><strong>Jarak:</strong> <span id="jarakKm">Memuat...</span> km</p>
                 <p><strong>Tanggal Pindahan:</strong> <span id="tanggalPindahan">Memuat...</span></p>
-                <p><strong>Barang Pindahan:</strong> <span id="barangPindahan">Memuat...</span></p>
-                <p><strong>Catatan Tambahan:</strong> <span id="catatanTambahan">Memuat...</span></p>
-                <p><strong>Total Pembayaran:</strong> Rp <span id="totalBiaya">Memuat...</span></p>
+                <p><strong>Barang Pindahan:</strong> <span id="barangPindahan" class="text-end">Memuat...</span></p>
+                <hr>
+                <p><strong>Subtotal:</strong> <span id="subtotalDisplay">Memuat...</span></p>
+                <p class="text-danger" id="diskonDisplayWrapper" style="display:none;">
+                    <strong>Diskon:</strong> <span id="diskonDisplay">Memuat...</span>
+                </p>
+                <hr>
+                <p class="fw-bold"><strong>Total Pembayaran:</strong> <span id="totalBiaya"
+                        class="fw-bold">Memuat...</span></p>
                 <p><strong>Metode Pembayaran:</strong> <span id="metodePembayaran">Memuat...</span></p>
             </div>
-            <p class="mt-4 text-muted" style="font-size: 0.9rem;">
-                Harap simpan detail pesanan Anda. Jika ada pertanyaan, jangan ragu untuk menghubungi layanan pelanggan
-                kami.
-            </p>
-            <a href="order.php" class="btn btn-primary  mt-3 ml-2">Pesan Pindahan Lain</a>
+            <a href="order.php" class="btn btn-primary mt-3 ml-2">Pesan Pindahan Lain</a>
             <a href="indexuser.php" class="btn btn-secondary mt-3 ml-2">Kembali ke Dashboard</a>
             <a href="review_form.php?order_id=<?php echo htmlspecialchars($orderDetailsFromSession['orderId'] ?? 'N/A'); ?>&order_type=pindahan"
                 class="btn btn-info mt-3 ml-2">Berikan Ulasan</a>
@@ -185,109 +175,49 @@ if (isset($_SESSION['order_details'])) {
 
     <footer class="footer-custom text-center py-4">
         <div class="container">
-            <p>&copy; <span id="tahunSekarangSuccess"></span> MOVER. Hak Cipta Dilindungi.</p>
+            <p>&copy; <?php echo date("Y"); ?> MOVER. Hak Cipta Dilindungi.</p>
         </div>
     </footer>
 
     <script>
-    // Menyisipkan detail pesanan dari PHP Session ke variabel JavaScript global
+    // Menyisipkan detail pesanan dari PHP Session ke variabel JavaScript
     const phpOrderDetails = <?php echo json_encode($orderDetailsFromSession); ?>;
-    </script>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Set tahun sekarang di footer
-        const tahunElement = document.getElementById("tahunSekarangSuccess");
-        if (tahunElement) {
-            tahunElement.textContent = new Date().getFullYear();
-        }
-
-        const orderIdEl = document.getElementById("orderId");
-        const alamatJemputEl = document.getElementById("alamatJemput");
-        const alamatTujuanEl = document.getElementById("alamatTujuan");
-        const jarakKmEl = document.getElementById("jarakKm");
-        const tanggalPindahanEl = document.getElementById("tanggalPindahan");
-        const barangPindahanEl = document.getElementById("barangPindahan");
-        const catatanTambahanEl = document.getElementById("catatanTambahan");
-        const totalBiayaEl = document.getElementById("totalBiaya");
-        const metodePembayaranEl = document.getElementById("metodePembayaran");
+        const formatRupiah = (angka) => "Rp " + parseFloat(angka).toLocaleString("id-ID");
 
         const orderDetails = phpOrderDetails;
-
         if (orderDetails) {
-            if (orderIdEl) orderIdEl.textContent = orderDetails.orderId || "Tidak Tersedia";
-            if (alamatJemputEl) alamatJemputEl.textContent = orderDetails.asal || "Tidak Tersedia";
-            if (alamatTujuanEl) alamatTujuanEl.textContent = orderDetails.tujuan || "Tidak Tersedia";
-            if (jarakKmEl) jarakKmEl.textContent = orderDetails.jarak !== undefined ? parseFloat(orderDetails
-                .jarak).toFixed(1).replace(/\.0$/, '') : "Tidak Tersedia";
+            document.getElementById("orderId").textContent = orderDetails.orderId || "N/A";
+            document.getElementById("alamatJemput").textContent = orderDetails.asal || "N/A";
+            document.getElementById("alamatTujuan").textContent = orderDetails.tujuan || "N/A";
+            document.getElementById("tanggalPindahan").textContent = orderDetails.tanggalPindah ? new Date(
+                orderDetails.tanggalPindah).toLocaleDateString("id-ID", {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            }) : "N/A";
+            document.getElementById("barangPindahan").textContent = orderDetails.barangPindahanDisplay || "N/A";
 
-            if (tanggalPindahanEl && orderDetails.tanggalPindah) {
-                try {
-                    const date = new Date(orderDetails.tanggalPindah + "T00:00:00");
-                    if (!isNaN(date.getTime())) {
-                        const options = {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                            timeZone: "UTC"
-                        };
-                        tanggalPindahanEl.textContent = date.toLocaleDateString("id-ID", options);
-                    } else {
-                        tanggalPindahanEl.textContent = orderDetails.tanggalPindah;
-                    }
-                } catch (e) {
-                    console.error("Error parsing tanggal pindahan:", e);
-                    tanggalPindahanEl.textContent = "Tidak Tersedia";
-                }
-            } else if (tanggalPindahanEl) {
-                tanggalPindahanEl.textContent = "Tidak Tersedia";
+            // BARU: Tampilkan detail biaya
+            document.getElementById("subtotalDisplay").textContent = formatRupiah(orderDetails.subtotal || 0);
+            if (orderDetails.diskonPersen > 0) {
+                document.getElementById("diskonDisplay").textContent =
+                    `- ${formatRupiah(orderDetails.nilaiDiskon || 0)} (${orderDetails.diskonPersen}%)`;
+                document.getElementById("diskonDisplayWrapper").style.display = 'flex';
             }
 
-            if (barangPindahanEl) barangPindahanEl.textContent = orderDetails.barangPindahanDisplay ||
-                "Tidak Ada";
-            if (catatanTambahanEl) catatanTambahanEl.textContent = orderDetails.catatanTambahan && orderDetails
-                .catatanTambahan.trim() !== "" ? orderDetails.catatanTambahan : "-";
-
-            if (totalBiayaEl) {
-                totalBiayaEl.textContent = orderDetails.totalBiaya !== undefined ? parseFloat(orderDetails
-                    .totalBiaya).toLocaleString("id-ID") : "Tidak Diketahui";
-            }
-            if (metodePembayaranEl) metodePembayaranEl.textContent = orderDetails.metodePembayaran ||
-                "Tidak Diketahui";
-
+            document.getElementById("totalBiaya").textContent = formatRupiah(orderDetails.totalBiaya || 0);
+            document.getElementById("metodePembayaran").textContent = orderDetails.metodePembayaran || "N/A";
         } else {
-            // Jika tidak ada detail pesanan (misal diakses langsung)
-            const defaultText = "Tidak Dapat Dimuat";
-            if (orderIdEl) orderIdEl.textContent = defaultText;
-            if (alamatJemputEl) alamatJemputEl.textContent = defaultText;
-            if (alamatTujuanEl) alamatTujuanEl.textContent = defaultText;
-            if (jarakKmEl) jarakKmEl.textContent = defaultText;
-            if (tanggalPindahanEl) tanggalPindahanEl.textContent = defaultText;
-            if (barangPindahanEl) barangPindahanEl.textContent = defaultText;
-            if (catatanTambahanEl) catatanTambahanEl.textContent = "-";
-            if (totalBiayaEl) totalBiayaEl.textContent = defaultText;
-            if (metodePembayaranEl) metodePembayaranEl.textContent = defaultText;
-
-            console.warn("Tidak ada detail pesanan ditemukan dari session untuk ditampilkan.");
-            const successCard = document.querySelector(".success-card-standalone");
-            if (successCard) {
-                const detailsDiv = successCard.querySelector(".order-details-summary-standalone");
-                const pError = document.createElement("p");
-                pError.innerHTML =
-                    '<strong style="color:red; margin-top:15px; display:block;">Gagal memuat detail pesanan. Silakan cek riwayat pesanan Anda atau hubungi customer service.</strong>';
-                if (detailsDiv) {
-                    detailsDiv.style.display = "none"; // Sembunyikan detail jika error
-                    detailsDiv.insertAdjacentElement("afterend", pError);
-                } else {
-                    successCard.appendChild(pError);
-                }
-            }
+            document.querySelector(".order-details-summary-standalone").innerHTML =
+                '<p class="text-danger text-center">Gagal memuat detail pesanan.</p>';
         }
     });
     </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

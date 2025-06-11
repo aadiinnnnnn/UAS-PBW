@@ -32,15 +32,8 @@ require 'session.php';
                     <li class="nav-item">
                         <a href="pilihan.php" class="nav-link order-btn-nav">Layanan</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle profile-icon-link" href="#" id="navbarDropdownUser"
-                            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="username-display"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownUser">
-                            <a class="dropdown-item" href="profil.php">Profil</a>
-                            <a class="dropdown-item" href="logout.php">Logout</a>
-                        </div>
+                    <li class="nav-item">
+                        <a href="logout.php" class="nav-link">logout</a>
                     </li>
                 </ul>
             </div>
