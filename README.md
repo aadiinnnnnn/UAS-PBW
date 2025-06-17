@@ -204,7 +204,7 @@ Pastikan Anda telah menginstal XAMPP atau tumpukan server lokal lainnya yang men
 4.  Jika Anda login sebagai **Pemilik Kost**, Anda akan diarahkan ke dasbor pemilik untuk mengelola properti Anda.
 
 -----
-Dibuat oleh Kelompok 4 
+Dibuat oleh Kelompok 4 Sistem Informasi Unsika angkatan 23
 - Muhammad Nugrah Adinda
 - Hana Nabila
 - Dandi Permana
