@@ -325,7 +325,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) {
                 </div>
             </div>
 
-            {/* Detail Lokasi */}
             <div class="form-section-card">
                 <h4><i class="fas fa-map-marked-alt mr-2"></i>Detail Lokasi</h4>
                 <div class="form-group">
@@ -356,7 +355,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitKost'])) {
                 </div>
             </div>
 
-            {/* Harga & Ketersediaan */}
             <div class="form-section-card">
                 <h4><i class="fas fa-dollar-sign mr-2"></i>Harga & Ketersediaan</h4>
                 <div class="form-row">
